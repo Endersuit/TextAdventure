@@ -18,5 +18,19 @@
     <ClCompile Include="TextAdventure.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="Creature.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="HealingPotion.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Consumable.h">
+      <Filter>File di origine</Filter>
+    </ClInclude>
+    <ClInclude Include="HealingPotion.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
