@@ -9,6 +9,7 @@ CombactManager::CombactManager(Creature* player, std::vector<Creature*> enemies)
     this->player = player;
     this->enemies = std::move(enemies); //tutti i dati dentro il vettore vengono trasferiti qui(evita la duplicazione)
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //perettere all attacante di dannegiare il bersaglio
 void CombactManager::TargetAttack(Creature* attacker, Creature* target)
@@ -22,13 +23,16 @@ void CombactManager::TargetAttack(Creature* attacker, Creature* target)
         target->GetDamage(attacker->ReturnAttack());
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //far scegliere al giocatore cosa fare (WIP)
 void CombactManager::ChooseAction()
 {
     //TO DO : controllare se il giocatore ha punti azione
     int selection = 0;
-    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra in difensiva " << std::endl;
+    std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbasata) ";
+    
+    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e  "<< message << std::endl;
     
     while (selection < 1 || selection > 3)
     {
@@ -39,17 +43,21 @@ void CombactManager::ChooseAction()
     { 
         case 1 :
             std::cout << "scegli un bersaglio" << std::endl;
+            TargetAttack(player,ChooseAnEnemy());
+            //TO DO : chiedere al giocatore cosa vule fare con il nemico scelto
             break;
         case 2:
             std::cout << "usa un consumabile" << std::endl;
+            //TO DO : usare il consumabile
             break;
         case 3:
-            std::cout << "entra in difesa" << std::endl;
+            player->SetInDefenceMode(!player->ReturnIsOnDefence());
             break;
 
 
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //restituire un puntatore del nemico
 Creature* CombactManager::ReturnSelectedEnemy(int index)
@@ -61,12 +69,14 @@ Creature* CombactManager::ReturnSelectedEnemy(int index)
         return enemies[index];
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //restituire un puntatore al nemico (selezionato tramite console)
 Creature* CombactManager::ChooseAnEnemy()
 {
     for (int i = 0; i < enemies.size(); i++)
     {
+        //TO DO : creare una funzione che stampi le statistiche attuali del nemico
         std::cout << " creatura : " + enemies[i]->ReturnCreatureName() << " indice  : " << i << std::endl;
     }
 
@@ -80,6 +90,7 @@ Creature* CombactManager::ChooseAnEnemy()
 
     return ReturnSelectedEnemy(index);
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //controlla se il nemico scelto e utilizabile
 bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
@@ -100,6 +111,7 @@ bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
     }
         
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //restituire true o false casulmente
 bool CombactManager::ReturnRandomBool()
@@ -110,6 +122,8 @@ bool CombactManager::ReturnRandomBool()
     std::cout << "IA ha fatto la sua scelta :  " << intention << std::endl;
     return intention;
 }
+
+
 //restituire un numero  casuale compresso tra 0 e N
 int CombactManager::ReturnRandomnumber(int n)
 {

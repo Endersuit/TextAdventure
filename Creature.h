@@ -21,13 +21,14 @@ public :
 	int ReturnAAP(); //restituisce i "avaible actionPoints"
 
 private : 
+
 	std::string creatureName;
 	int maxHealth;
+	int actionPointsPerTurn = 2;
+	int AvaibleActionPoints;
 	float currentHealth;
 	float defence;
 	float attack;
-	int actionPointsPerTurn = 2;
-	int AvaibleActionPoints;
 	bool isOnDefensive;
 	std::unique_ptr<Consumable> equippedConsumable = nullptr; //smart pointer, 
 	//permette la gestione automatica della memoria senza usare "new" o "delete"

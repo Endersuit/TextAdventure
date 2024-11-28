@@ -13,7 +13,57 @@ Creature::Creature(std::string creatureName,int maxHealth, float defence,  float
 	this->isOnDefensive = isOnDefensive;
 	AvaibleActionPoints = actionPointsPerTurn;
 }
+//////////////////////////////////////////Gestione statistiche/////////////////////////////////////////////
 
+//ripristinare i punti azione
+void Creature::RestoreActionPoints()
+{
+	AvaibleActionPoints = actionPointsPerTurn;
+}
+
+//usare un consumabile
+void Creature::UseConsumable()
+{
+	if (equippedConsumable) //se il puntatore e valido (!= null)
+	{
+		equippedConsumable->UseConsumable(this);
+		equippedConsumable = nullptr; //liberare l'inventario consumabile
+	}
+	else
+	{
+		std::cout << "nessun consumabile equipagiato";
+	}
+
+}
+
+//equipaggiar eun consumabile
+void Creature::EquipConsumable(Consumable* consumable)
+{
+	if (!equippedConsumable)//slot libero
+	{
+		equippedConsumable.reset(consumable); //sostituisce il vecchio puntattore con quello nuovo 
+		//ed elimina quello vecchio se non ci sono piu riferimenti
+	}
+	else
+	{
+		cout << "non hai spazio per un altro consumabile" << endl;
+	}
+}
+
+//attacare un altra creatura
+void Creature::Attack(Creature& target)
+{
+	if (this != &target)//confronto i puntatori per vedere se puntano alla stessa cosa
+	{
+		target.GetDamage(attack);
+	}
+	else
+	{
+		cout << "la creatura non puo dannegiare se stessa" << endl;
+	}
+}
+
+//far subire danni alla creatura
 void Creature::GetDamage(float damage)
 {
 	
@@ -44,6 +94,35 @@ void Creature::GetDamage(float damage)
 	}
 
 }
+////////////////////////////////////////////Get E Set/////////////////////////////////////////////////
+
+//entrare/uscire in difesa
+void Creature::SetInDefenceMode(bool activate)
+{
+	if (isOnDefensive == activate)
+	{
+		string message = isOnDefensive ?  " alzata " : " abbasata ";
+		std::cout << "la tua difesa e gia  "<< message << std::endl;
+	}
+	isOnDefensive = activate;
+	std::cout << "la difesa della creatura " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
+}
+
+float Creature::ReturnAttack()
+{
+	return attack;
+}
+
+float Creature::ReturnCurrentHealth()
+{
+	return currentHealth;
+}
+
+int Creature::ReturnAAP()
+{
+	return AvaibleActionPoints;
+}
+
 bool Creature::ReturnIsOnDefence()
 {
 	return isOnDefensive;
@@ -54,69 +133,3 @@ std::string Creature::ReturnCreatureName()
 	return creatureName;
 }
 
-//ripristinare i punti azione
-void Creature::RestoreActionPoints()
-{
-	AvaibleActionPoints = actionPointsPerTurn;
-}
-//usare un consumabile
-void Creature::UseConsumable()
-{
-	if (equippedConsumable) //se il puntatore e valido (!= null)
-	{
-		equippedConsumable->UseConsumable(this);
-		equippedConsumable = nullptr; //liberare l'inventario consumabile
-	}
-	else
-	{
-		std::cout << "nessun consumabile equipagiato";
-	}
-
-}
-//equipaggiar eun consumabile
-void Creature::EquipConsumable(Consumable* consumable)
-{
-	if (!equippedConsumable)//slot libero
-	{
-		equippedConsumable.reset(consumable); //sostituisce il vecchio puntattore con quello nuovo 
-		//ed elimina quello vecchio se non ci sono piu riferimenti
-	}
-	else
-	{
-		cout << "non hai spazio per un altro consumabile" << endl;
-	}
-}
-
-//attacare un altra creatura
-void Creature::Attack(Creature& target)
-{
-	if (this != &target)//confronto i puntatori per vedere se puntano alla stessa cosa
-	{
-		target.GetDamage(attack);
-	}
-	else
-	{
-		cout << "la creatura non puo dannegiare se stessa" << endl;
-	}
-}
-
-//funzioni Set and Get
-
-//entrare in difesa
-void Creature::SetInDefenceMode(bool activate)
-{
-	isOnDefensive = activate;
-	std::cout << "la difesa della creatua " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
-}
-float Creature::ReturnAttack()
-{
-	return attack;
-}
-float Creature::ReturnCurrentHealth()
-{
-	return currentHealth;
-}
-int Creature::ReturnAAP()
-{
-	return AvaibleActionPoints;
-}

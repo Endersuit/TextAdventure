@@ -16,7 +16,8 @@ int main()
     std::vector<Creature*> enemies = { endersuit, enderman, enderman1 };
 
     CombactManager combactManager(player,enemies);
-    combactManager.ChooseAnEnemy();
+    combactManager.ChooseAction();
+    combactManager.ChooseAction();
     //int number = combactManager.ReturnRandomnumber(3);
     //Creature* selection = combactManager.ReturnSelectedEnemy(number);
     //combactManager.CheckIfSelectionIsAvaible(selection);
