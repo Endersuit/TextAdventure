@@ -3,15 +3,15 @@
 #include <algorithm> //per accedere alla funzione "CLAMP"
 using namespace std;
 
-Creature::Creature(std::string creatureName,int maxHealth, float defence, int actionPointsPerTurn, float attack ,bool isOnDefensive)
+Creature::Creature(std::string creatureName,int maxHealth, float defence,  float attack ,bool isOnDefensive)
 {
 	this->creatureName = creatureName;
 	this->maxHealth = maxHealth;
 	this->currentHealth = maxHealth;  // La salute iniziale è uguale a quella massima
 	this->defence = defence;
 	this->attack = attack;
-	this->actionPointsPerTurn = actionPointsPerTurn;
 	this->isOnDefensive = isOnDefensive;
+	AvaibleActionPoints = actionPointsPerTurn;
 }
 
 void Creature::GetDamage(float damage)
@@ -44,10 +44,20 @@ void Creature::GetDamage(float damage)
 	}
 
 }
-//ripristinar ei punti azione
+bool Creature::ReturnIsOnDefence()
+{
+	return isOnDefensive;
+}
+
+std::string Creature::ReturnCreatureName()
+{
+	return creatureName;
+}
+
+//ripristinare i punti azione
 void Creature::RestoreActionPoints()
 {
-	actualActionPoints = actionPointsPerTurn;
+	AvaibleActionPoints = actionPointsPerTurn;
 }
 //usare un consumabile
 void Creature::UseConsumable()
@@ -76,14 +86,9 @@ void Creature::EquipConsumable(Consumable* consumable)
 		cout << "non hai spazio per un altro consumabile" << endl;
 	}
 }
-//entrare in difesa
-void Creature::SetInDefenceMode(bool activate)
-{
-	isOnDefensive = activate;
-	std::cout << "la difesa della creatua "<< creatureName<<" e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
-}
+
 //attacare un altra creatura
-void Creature::Attack(Creature &target)
+void Creature::Attack(Creature& target)
 {
 	if (this != &target)//confronto i puntatori per vedere se puntano alla stessa cosa
 	{
@@ -91,6 +96,27 @@ void Creature::Attack(Creature &target)
 	}
 	else
 	{
-		cout <<"la creatura non puo dannegiare se stessa" << endl;
+		cout << "la creatura non puo dannegiare se stessa" << endl;
 	}
+}
+
+//funzioni Set and Get
+
+//entrare in difesa
+void Creature::SetInDefenceMode(bool activate)
+{
+	isOnDefensive = activate;
+	std::cout << "la difesa della creatua " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
+}
+float Creature::ReturnAttack()
+{
+	return attack;
+}
+float Creature::ReturnCurrentHealth()
+{
+	return currentHealth;
+}
+int Creature::ReturnAAP()
+{
+	return AvaibleActionPoints;
 }

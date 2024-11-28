@@ -5,7 +5,7 @@
 class Creature
 {
 public : 
-	Creature(std::string creatureName,int maxHealth, float defence, int actionPointsPerTurn,float attack ,bool isOnDefensive);
+	Creature(std::string creatureName,int maxHealth, float defence,float attack ,bool isOnDefensive);
 	//funzioni
 	void Attack(Creature &target);
 	void SetInDefenceMode(bool activate);
@@ -13,15 +13,21 @@ public :
 	void RestoreActionPoints();
 	void UseConsumable();
 	void EquipConsumable(Consumable* consumable);
-	//funzione usa consumabile
+
+	bool ReturnIsOnDefence();
+	std::string ReturnCreatureName();
+	float ReturnAttack();
+	float ReturnCurrentHealth();
+	int ReturnAAP(); //restituisce i "avaible actionPoints"
+
 private : 
 	std::string creatureName;
 	int maxHealth;
 	float currentHealth;
 	float defence;
 	float attack;
-	int actionPointsPerTurn;
-	int actualActionPoints;
+	int actionPointsPerTurn = 2;
+	int AvaibleActionPoints;
 	bool isOnDefensive;
 	std::unique_ptr<Consumable> equippedConsumable = nullptr; //smart pointer, 
 	//permette la gestione automatica della memoria senza usare "new" o "delete"

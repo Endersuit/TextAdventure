@@ -24,12 +24,24 @@
     <ClCompile Include="HealingPotion.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="IncendiaryBomb.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="CombactManager.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Consumable.h">
-      <Filter>File di origine</Filter>
-    </ClInclude>
     <ClInclude Include="HealingPotion.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Consumable.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="IncendiaryBomb.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="CombactManager.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

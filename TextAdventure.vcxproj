@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CombactManager.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="HealingPotion.cpp" />
+    <ClCompile Include="IncendiaryBomb.cpp" />
     <ClCompile Include="TextAdventure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CombactManager.h" />
     <ClInclude Include="Consumable.h" />
     <ClInclude Include="HealingPotion.h" />
+    <ClInclude Include="IncendiaryBomb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

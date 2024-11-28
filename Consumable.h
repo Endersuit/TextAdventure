@@ -1,4 +1,4 @@
-#pragma once//non toccare questa riga
+#pragma once
 class Creature; //ho solo bisogno di una reference, percio mi affido a una forward declaration
 class  Consumable //classe che verra ereditata da ogni oggetto consumabile
 {
