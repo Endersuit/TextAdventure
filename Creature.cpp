@@ -87,13 +87,13 @@ void Creature::GetDamage(float damage)
 		if (damageAmount >= currentHealth)
 		{
 			currentHealth = 0;
-			std::cout << "la creatura " << creatureName << "e morta " << std::endl;
+			std::cout << "la creatura " << creatureName << " e morta " << std::endl;
 			//richiamare qualcosa che faccia sparire la creatura dal campo di battaglia
 		}
 		else
 		{
 			currentHealth -= damageAmount;
-			std::cout << "la creatura " << creatureName << "ha subito " << damageAmount << " danni" << std::endl;
+			std::cout << "la creatura " << creatureName << " ha subito " << damageAmount << " danni" << std::endl;
 			std::cout << "vita residua : " <<currentHealth <<std::endl;
 		}
 	}

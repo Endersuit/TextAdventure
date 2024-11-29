@@ -5,10 +5,7 @@ class IncendiaryBomb : public Consumable
 {
 public :
 	
-	virtual void UseConsumable(Creature* target) //funzione ereditata da consumable, prende in input
-	{
-		
-	}
+	virtual void UseConsumable(Creature* target); //funzione ereditata da consumable, prende in input
 
 private:
 

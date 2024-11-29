@@ -57,12 +57,10 @@ void CombactManager::ChooseAction()
     switch (selection)
     { 
         case 1 :
-            std::cout << "scegli un bersaglio" << std::endl;
             TargetAttack(player,ChooseAnEnemy());
             //TO DO : chiedere al giocatore cosa vule fare con il nemico scelto
             break;
         case 2:
-            std::cout << "usa un consumabile" << std::endl;
             //TO DO : usare il consumabile
             break;
         case 3:
@@ -89,6 +87,7 @@ Creature* CombactManager::ReturnSelectedEnemy(int index)
     }
     return nullptr;
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //restituire un puntatore al nemico (selezionato tramite console)
@@ -99,7 +98,8 @@ Creature* CombactManager::ChooseAnEnemy()
         for (int i = 0; i < enemies.size(); i++)
         {
             //TO DO : creare una funzione che stampi le statistiche attuali del nemico
-            std::cout << " creatura : " + enemies[i].get()->ReturnCreatureName() << " indice  : " << i << std::endl;
+            PrintCreatureInfo(enemies[i].get());
+            std::cout << " indice  : " << i << std::endl;
         }
 
         int index = -1;
@@ -139,7 +139,21 @@ bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
     }
         
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////Return/Output //////////////////////////////////////////////
+
+//stampare su console tutte le statistiche della creatura
+void CombactManager::PrintCreatureInfo(Creature* creatureToPrint)
+{
+    if (creatureToPrint)
+    {
+        std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
+        std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << std::endl;
+    }
+    else
+    {
+        std::cout << "ERRORE, PUNTATORE NULLO" << std::endl;
+    }
+}
 
 //restituire true o false casulmente
 bool CombactManager::ReturnRandomBool()

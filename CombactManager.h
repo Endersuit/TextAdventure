@@ -19,6 +19,9 @@ public :
 		;
 	void TargetAttack(Creature* attacker, Creature* target);
 	void ChooseAction();
+
+	void PrintCreatureInfo(Creature* creatureToPrint);
+
 	//Get
 	Creature* ReturnSelectedEnemy(int index);
 	Creature* ChooseAnEnemy();
