@@ -13,6 +13,20 @@ Creature::Creature(std::string creatureName,int maxHealth, float defence,  float
 	this->isOnDefensive = isOnDefensive;
 	AvaibleActionPoints = actionPointsPerTurn;
 }
+
+//construttore di coppia
+Creature::Creature(const Creature& other)
+	: creatureName(other.creatureName),
+	maxHealth(other.maxHealth),
+	AvaibleActionPoints(other.AvaibleActionPoints),
+	actionPointsPerTurn(other.actionPointsPerTurn),
+	currentHealth(other.currentHealth),
+	defence(other.defence),
+	attack(other.attack),
+	isOnDefensive(other.isOnDefensive)
+{
+	//niente
+}
 //////////////////////////////////////////Gestione statistiche/////////////////////////////////////////////
 
 //ripristinare i punti azione
@@ -33,7 +47,6 @@ void Creature::UseConsumable()
 	{
 		std::cout << "nessun consumabile equipagiato";
 	}
-
 }
 
 //equipaggiar eun consumabile

@@ -1,14 +1,25 @@
 #pragma once
 #include <vector>
+#include <memory> 
 class Creature;
 class CombactManager
 {
 public : 
-	CombactManager(Creature* player, std::vector<Creature*> enemies);
+	//la parola "delete" evita che venga creata una copia dell' istanza o di utilizare un operatore
+	CombactManager(const CombactManager&) = delete;
+
+	static CombactManager& Get() {
+		static CombactManager instance;  // L'istanza statica
+		return instance;
+	}
 	
+	//set
+	void SetPlayer(Creature* player);
+	void SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies);
+		;
 	void TargetAttack(Creature* attacker, Creature* target);
 	void ChooseAction();
-	
+	//Get
 	Creature* ReturnSelectedEnemy(int index);
 	Creature* ChooseAnEnemy();
 	
@@ -20,10 +31,10 @@ public :
 	//funzione per iniziare il combattimento (WIP)
 
 private :
-	
-	Creature* player; //reference : passare una istanza gia esistente che non deve essere null
-	
-	std::vector<Creature*> enemies; //i nemici sarano gia instaziti, percio passo i puntatori per evitare
+	CombactManager() {}
+
+	Creature* player = nullptr; //reference : passare una istanza gia esistente che non deve essere null
+	std::vector<std::unique_ptr<Creature>> enemies; //i nemici sarano gia instaziti, percio passo i puntatori per evitare
 	//di crearne delle coppie
 	
 	bool isPlayerTurn = true; //in ogni battaglia il giocatore sara il primo a iniziare. true -> turno dle giocatore. false -> turno degli avversari

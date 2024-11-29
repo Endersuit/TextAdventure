@@ -8,20 +8,24 @@
 #include "IncendiaryBomb.h"
 int main()
 {
-    Creature* player = new Creature("Kalagan", 20, 4, 5, true);
-    Creature* endersuit = new Creature("Endersuit", 20, 6, 5, true);
-    Creature* enderman = new Creature("Enderman", 20, 1, 2, true);
-    Creature* enderman1 = new Creature("Endermite", 5, 1, 1, true);
+    //nemici Round One
 
-    std::vector<Creature*> enemies = { endersuit, enderman, enderman1 };
+    //puntatori smart unici -> gestione automatica della memoria
+    std::unique_ptr<Creature> player = std::make_unique<Creature>("Kalagan", 20, 4, 5, true);
+    std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Endersuit", 20, 6, 5, true);
+    std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Enderman", 20, 1, 2, true);
+    std::unique_ptr<Creature> enderman1 = std::make_unique<Creature>("Endermite", 5, 1, 1, true);
+    
+    //trasferire i puntatori in una nuova posizione 
+    std::vector<std::unique_ptr<Creature>> roundOneEnemies;
 
-    CombactManager combactManager(player,enemies);
-    combactManager.ChooseAction();
-    combactManager.ChooseAction();
-    //int number = combactManager.ReturnRandomnumber(3);
-    //Creature* selection = combactManager.ReturnSelectedEnemy(number);
-    //combactManager.CheckIfSelectionIsAvaible(selection);
+    roundOneEnemies.push_back(std::move(endersuit));
+    roundOneEnemies.push_back(std::move(enderman));
+    roundOneEnemies.push_back(std::move(enderman1));
+    
+    CombactManager::Get().SetEnemies(std::move(roundOneEnemies));
 
+    CombactManager::Get().ReturnSelectedEnemy(0);
 
 }
 

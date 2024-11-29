@@ -5,7 +5,10 @@
 class Creature
 {
 public : 
+	//construttore
 	Creature(std::string creatureName,int maxHealth, float defence,float attack ,bool isOnDefensive);
+	//construttore di spostamento
+	Creature(const Creature& other);
 	//funzioni
 	void Attack(Creature &target);
 	void SetInDefenceMode(bool activate);

@@ -3,13 +3,28 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+//TO DO : convertire in un singleton Pattern : 
+//2) creare una funzione per passare in Input un giocatore o dei nemici
 
-CombactManager::CombactManager(Creature* player, std::vector<Creature*> enemies)
+//////////////////////////////////////////////////SET//////////////////////////////////////////////////
+
+void CombactManager::SetPlayer(Creature* player)
 {
-    this->player = player;
-    this->enemies = std::move(enemies); //tutti i dati dentro il vettore vengono trasferiti qui(evita la duplicazione)
+    if (player != nullptr)
+    {
+        this->player = player;
+    }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//trasferire in puntatori unici al combactManager
+void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies)
+{
+    this->enemies.clear();
+
+    if (!enemies.empty()) {
+        this->enemies = std::move(enemies);  // Trasferisci la proprietà
+    }
+}
 
 //perettere all attacante di dannegiare il bersaglio
 void CombactManager::TargetAttack(Creature* attacker, Creature* target)
@@ -59,36 +74,49 @@ void CombactManager::ChooseAction()
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//restituire un puntatore del nemico
+//TO DO : restituire un puntatore del nemico tramire index
 Creature* CombactManager::ReturnSelectedEnemy(int index)
 {
-    if (enemies.size() > 0)
+    if (!enemies.empty())
     {
         //restituisce il puntatore
-        std::cout << "nemico scelto : " << enemies[index]->ReturnCreatureName() << std::endl;
-        return enemies[index];
+        std::cout << "nemico scelto : " << enemies[index].get()->ReturnCreatureName() << std::endl;
+        return enemies[index].get();
     }
+    else
+    {
+        std::cout << "non ho nemici nella lista";
+    }
+    return nullptr;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //restituire un puntatore al nemico (selezionato tramite console)
 Creature* CombactManager::ChooseAnEnemy()
 {
-    for (int i = 0; i < enemies.size(); i++)
+    if (!enemies.empty())
     {
-        //TO DO : creare una funzione che stampi le statistiche attuali del nemico
-        std::cout << " creatura : " + enemies[i]->ReturnCreatureName() << " indice  : " << i << std::endl;
-    }
+        for (int i = 0; i < enemies.size(); i++)
+        {
+            //TO DO : creare una funzione che stampi le statistiche attuali del nemico
+            std::cout << " creatura : " + enemies[i].get()->ReturnCreatureName() << " indice  : " << i << std::endl;
+        }
 
-    int index = -1;
-    std::cout << " digita l'indice corrispodente per selezionare una creatura " << std::endl;
-    
-    while (index < 0 || index >= enemies.size())
+        int index = -1;
+        std::cout << " digita l'indice corrispodente per selezionare una creatura " << std::endl;
+
+        while (index < 0 || index >= enemies.size())
+        {
+            std::cin >> index;
+        }
+
+        return ReturnSelectedEnemy(index);
+    }
+    else
     {
-        std::cin >> index;
+        std::cout << "non ho nemici nella lista";
     }
-
-    return ReturnSelectedEnemy(index);
+    return nullptr;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +156,7 @@ bool CombactManager::ReturnRandomBool()
 int CombactManager::ReturnRandomnumber(int n)
 {
     srand(time(NULL)); //imposto il seme di generazione casuale
-    int number = rand() % 3 ;
+    int number = rand() % n ;
     std::cout << " numero scelto  :  " << number << std::endl;
     return number;
 }
