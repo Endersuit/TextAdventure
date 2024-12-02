@@ -12,8 +12,6 @@ public :
 		static CombactManager instance;  // L'istanza statica
 		return instance;
 	}
-	//gestione turni del combattimento
-    void StartAndManageFight();
 
 	//set
 	void SetPlayer(Creature* player);
@@ -36,7 +34,12 @@ public :
 	
 	int ReturnRandomnumber(int n);
 	
-	//funzione per iniziare il combattimento (WIP)
+	//gestione turni del combattimento
+	void StartAndManageFight();
+	bool CheckCreatureIsHighOnHealth(Creature* creature);
+	bool CheckCreatureIsFullAP(Creature* creature);
+	void SwapEnemiesArray();
+
 
 private :
 	CombactManager() {}
