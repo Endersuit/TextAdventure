@@ -12,21 +12,26 @@ public :
 		static CombactManager instance;  // L'istanza statica
 		return instance;
 	}
-	
+	//gestione turni del combattimento
+    void StartAndManageFight();
+
 	//set
 	void SetPlayer(Creature* player);
 	void SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies);
 		;
 	void TargetAttack(Creature* attacker, Creature* target);
-	void ChooseAction();
+	void ChooseAnAction();
 
-	void PrintCreatureInfo(Creature* creatureToPrint);
-
+	void PrintCreatureInfo(Creature* creatureToPrint, int index);
+	void PrintCreatureInfo();
+	
 	//Get
 	Creature* ReturnSelectedEnemy(int index);
 	Creature* ChooseAnEnemy();
 	
+	void AnalyzeAndDecide();
 	bool CheckIfSelectionIsAvaible(Creature* selcetedCreature);
+	bool CheckIfEnemiesAlive();
 	bool ReturnRandomBool();
 	
 	int ReturnRandomnumber(int n);

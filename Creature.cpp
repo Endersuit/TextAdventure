@@ -25,7 +25,7 @@ Creature::Creature(const Creature& other)
 	attack(other.attack),
 	isOnDefensive(other.isOnDefensive)
 {
-	//niente
+	
 }
 //////////////////////////////////////////Gestione statistiche/////////////////////////////////////////////
 
@@ -35,6 +35,14 @@ void Creature::RestoreActionPoints()
 	AvaibleActionPoints = actionPointsPerTurn;
 }
 
+void Creature::ConsumeActionPoint()
+{
+	if (AvaibleActionPoints > 0)
+	{
+		AvaibleActionPoints--;
+	}
+}
+
 //usare un consumabile
 void Creature::UseConsumable()
 {
@@ -42,6 +50,7 @@ void Creature::UseConsumable()
 	{
 		equippedConsumable->UseConsumable(this);
 		equippedConsumable = nullptr; //liberare l'inventario consumabile
+		ConsumeActionPoint();
 	}
 	else
 	{
@@ -49,7 +58,7 @@ void Creature::UseConsumable()
 	}
 }
 
-//equipaggiar eun consumabile
+//equipaggiare un consumabile
 void Creature::EquipConsumable(Consumable* consumable)
 {
 	if (!equippedConsumable)//slot libero
@@ -64,11 +73,12 @@ void Creature::EquipConsumable(Consumable* consumable)
 }
 
 //attacare un altra creatura
-void Creature::Attack(Creature& target)
+void Creature::Attack(Creature* target)
 {
-	if (this != &target)//confronto i puntatori per vedere se puntano alla stessa cosa
+	if (this != target)//confronto i puntatori per vedere se puntano alla stessa cosa
 	{
-		target.GetDamage(attack);
+		target->GetDamage(attack);
+		ConsumeActionPoint();
 	}
 	else
 	{
@@ -119,6 +129,7 @@ void Creature::SetInDefenceMode(bool activate)
 	}
 	isOnDefensive = activate;
 	std::cout << "la difesa della creatura " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
+	ConsumeActionPoint();
 }
 
 float Creature::ReturnAttack()
@@ -131,9 +142,24 @@ float Creature::ReturnCurrentHealth()
 	return currentHealth;
 }
 
+float Creature::ReturnMaxHealth()
+{
+	return maxHealth;
+}
+
 int Creature::ReturnAAP()
 {
 	return AvaibleActionPoints;
+}
+
+int Creature::ReturnActionPointsPerTurn()
+{
+	return actionPointsPerTurn;
+}
+
+void Creature::ClearActionPoints()
+{
+	AvaibleActionPoints = 0;
 }
 
 bool Creature::ReturnIsOnDefence()
