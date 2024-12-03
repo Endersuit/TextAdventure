@@ -44,7 +44,9 @@ void CombactManager::StartAndManageFight()
 
         if (isPlayerTurn)
         {
+            std::cout << "_________________________________________________________________________________________________" << std::endl;
             PrintCreaturesInfo();
+            std::cout << "_________________________________________________________________________________________________" << std::endl;
             ChooseAnAction();
             continue; //torna dentro il ciclo while
         }
@@ -107,10 +109,11 @@ void CombactManager::AnalyzeAndDecide()
             avaibleEnemies++;
     }
 
+    //SwapEnemiesArray();
     while (avaibleEnemies > 0)
     {
-        //controlla quanti nemici sono ancora disponibili
         SwapEnemiesArray();
+        //controlla quanti nemici sono ancora disponibili
 
         std::cout << "l'IA inizia a  fare la sua scelta" << std::endl;
         std::cout << std::endl;
@@ -120,13 +123,13 @@ void CombactManager::AnalyzeAndDecide()
             {
                 //finisce tutto
             }
-            /////////////////////////////////la creatura ha HP > 50%////////////////////////////////////////
+            
             if (!CheckIfSelectionIsAvaible(enemies[i].get()))
             {
                 avaibleEnemies -= 1;
                 continue;
             }
-
+            /////////////////////////////////la creatura ha HP > 50%////////////////////////////////////////
             if (CheckCreatureIsHighOnHealth(enemies[i].get()))
             {
                 /*std::cout << " salute della creatura scelta > 50% " << std::endl;*/
@@ -198,7 +201,6 @@ void CombactManager::AnalyzeAndDecide()
             /////////////////////////////////la creatura ha HP < 50%////////////////////////////////////////
             else
             {
-                /*std::cout << " salute della creatura scelta <= 50% " << std::endl;*/
 
                 //la creatura E' sulla DIFENSIVA
                 if (enemies[i]->ReturnIsOnDefence())
@@ -212,7 +214,7 @@ void CombactManager::AnalyzeAndDecide()
                         //il GIOCATORE puo essere UCCISO con un ATTACO
                         if (player->ReturnCurrentHealth() <= enemies[i]->ReturnAttack())
                         {
-                            std::cout << " il giocatore puo essere ucciso con un attaco, la lascia la difesa e attaca " << std::endl;
+                            std::cout << " il giocatore puo essere ucciso con un attaco, lascia la difesa e attaca " << std::endl;
                             std::cout << std::endl;
                             enemies[i]->SetInDefenceMode(false);
                             TargetAttack(enemies[i].get(), player);
@@ -220,7 +222,55 @@ void CombactManager::AnalyzeAndDecide()
                         //il GIOCATORE  NON puo essere UCCISO con un ATTACO
                         else
                         {
-                            //TO DO
+                                int consumableType = enemies[i].get()->ReturnConsumableType();
+                            switch (consumableType)
+                            {                            
+                            case(0): //nessun consumabile-> sceglie se attacare                            
+                                if (ReturnRandomBool())
+                                {//lascia la difesa e attaca
+                                    enemies[i].get()->SetInDefenceMode(false);
+                                    TargetAttack(enemies[i].get(), player);
+                                }
+                                else
+                                {//resta in difesa, salta il turno
+                                    enemies[i].get()->ClearActionPoints();
+                                }
+                                continue;
+                            
+                            case(1): //pozione di cura-> resta in difesa, si cura, il nemico salta il turno
+                                enemies[i].get()->UseConsumable(enemies[i].get());
+                                enemies[i].get()->ClearActionPoints();
+                                continue;
+                            
+                            
+                            case(2): //bomba incendiaria-> resta in difesa, lancia una bomba al nemico, salta il turno
+                                enemies[i].get()->UseConsumable(player);
+                                enemies[i].get()->ClearActionPoints();
+                                continue;
+                            }
+                        }
+                    }
+                    //APP PARZIALMENTE disponibili
+                    else
+                    {
+                        std::cout << " AAP della creatura scelta parzialmente disponibili " << std::endl;
+                        std::cout << std::endl;
+                        int consumableType = enemies[i].get()->ReturnConsumableType();
+                        switch (consumableType)
+                        {
+                        case(0): //nessun consumabile-> rimane in difesa, salta il turno                           
+                            enemies[i].get()->ClearActionPoints();
+                            continue;
+
+                        case(1): //pozione di cura-> resta in difesa, si cura
+                            enemies[i].get()->UseConsumable(enemies[i].get());
+                            enemies[i].get()->ClearActionPoints();
+                            continue;
+
+
+                        case(2): //bomba incendiaria-> resta in difesa, lancia una bomba al nemico
+                            enemies[i].get()->UseConsumable(player);
+                            continue;
                         }
                     }
                 }
@@ -270,6 +320,25 @@ void CombactManager::AnalyzeAndDecide()
     }
 }
 
+int::CombactManager::CheckAndUseConsumable(Creature* creature)
+{
+    int consumableType = creature->ReturnConsumableType();
+    switch (consumableType)
+    {
+    case(0): //consumabile nullo -> non possiede nessun consumabile
+        return consumableType;
+
+    case(1): //pozione di cura
+
+        return consumableType;
+    case(2):
+        //bomba incendiaria
+        return consumableType;
+    }
+
+    return 0;
+}
+
 //perettere all attacante di dannegiare il bersaglio
 void CombactManager::TargetAttack(Creature* attacker, Creature* target)
 {
@@ -283,7 +352,7 @@ void CombactManager::TargetAttack(Creature* attacker, Creature* target)
     }
 }
 
-void CombactManager::SwapEnemiesArray()
+void CombactManager::SwapEnemiesArray() //BUG : va fixata
 {
     int numberOfInteractions = ReturnRandomnumber(enemies.size());
     

@@ -1,7 +1,8 @@
 #include "IncendiaryBomb.h"
 #include "CombactManager.h"
-
-void IncendiaryBomb::UseConsumable(Creature* target)
+#include <iostream>
+void IncendiaryBomb::UseConsumable(Creature* creature)
 {
-
+	std::cout << " bomba incediaria usata su  " << creature->ReturnCreatureName() << std::endl;
+	creature->GetDamage(damage);	
 }

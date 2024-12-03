@@ -34,8 +34,9 @@ public :
 	
 	int ReturnRandomnumber(int n);
 	
-	//gestione turni del combattimento
+	//gestione turni e combattimento
 	void StartAndManageFight();
+	int CheckAndUseConsumable(Creature* creature); //controlla se un nemico ha un consumabile e se usarlo. a seconda dle consumabile, il nemico fa qualcosa
 	bool CheckForPossibleWinner();
 	bool CheckCreatureIsHighOnHealth(Creature* creature);
 	bool CheckCreatureIsFullAP(Creature* creature);

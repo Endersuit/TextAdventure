@@ -3,7 +3,7 @@
 #include <algorithm> //per accedere alla funzione "CLAMP"
 using namespace std;
 
-Creature::Creature(std::string creatureName,int maxHealth, float defence,  float attack ,bool isOnDefensive)
+Creature::Creature(std::string creatureName,int maxHealth, float defence,  float attack ,bool isOnDefensive, std::unique_ptr<Consumable> consumable)
 {
 	this->creatureName = creatureName;
 	this->maxHealth = maxHealth;
@@ -12,6 +12,7 @@ Creature::Creature(std::string creatureName,int maxHealth, float defence,  float
 	this->attack = attack;
 	this->isOnDefensive = isOnDefensive;
 	AvaibleActionPoints = actionPointsPerTurn;
+	consumableSlot = std::move(consumable);
 }
 
 //construttore di coppia
@@ -25,8 +26,19 @@ Creature::Creature(const Creature& other)
 	attack(other.attack),
 	isOnDefensive(other.isOnDefensive)
 {
-	
-}
+	if (other.consumableSlot) // Se il consumabile esiste
+	{
+		// Esegui il dynamic_cast sul puntatore grezzo dell'oggetto contenuto in consumableSlot
+		if (auto potionCure = dynamic_cast<HealingPotion*>(other.consumableSlot.get())) {
+			// Se è una HealingPotion, crea una copia della HealingPotion
+			consumableSlot = std::make_unique<HealingPotion>(*potionCure);
+		}
+		else if (auto bomb = dynamic_cast<IncendiaryBomb*>(other.consumableSlot.get())) {
+			// Se è una IncendiaryBomb, crea una copia della IncendiaryBomb
+			consumableSlot = std::make_unique<IncendiaryBomb>(*bomb);
+		}
+	}
+	}
 //////////////////////////////////////////Gestione statistiche/////////////////////////////////////////////
 
 //ripristinare i punti azione
@@ -44,12 +56,12 @@ void Creature::ConsumeActionPoint()
 }
 
 //usare un consumabile
-void Creature::UseConsumable()
+void Creature::UseConsumable(Creature* target)
 {
-	if (equippedConsumable) //se il puntatore e valido (!= null)
+	if (consumableSlot) //se il puntatore e valido (!= null)
 	{
-		equippedConsumable->UseConsumable(this);
-		equippedConsumable = nullptr; //liberare l'inventario consumabile
+		consumableSlot->UseConsumable(target);
+		consumableSlot = nullptr; //liberare l'inventario consumabile
 		ConsumeActionPoint();
 	}
 	else
@@ -61,9 +73,9 @@ void Creature::UseConsumable()
 //equipaggiare un consumabile
 void Creature::EquipConsumable(Consumable* consumable)
 {
-	if (!equippedConsumable)//slot libero
+	if (!consumableSlot)//slot libero
 	{
-		equippedConsumable.reset(consumable); //sostituisce il vecchio puntattore con quello nuovo 
+		consumableSlot.reset(consumable); //sostituisce il vecchio puntattore con quello nuovo 
 		//ed elimina quello vecchio se non ci sono piu riferimenti
 	}
 	else
@@ -112,7 +124,7 @@ void Creature::GetDamage(float damage)
 		currentHealth += (-1 * damage);
 		//controllare che la salute non superi il massimo consentitto
 		currentHealth = (currentHealth > maxHealth) ? currentHealth = maxHealth : currentHealth;
-		std::cout << "la creatura " << creatureName << "e stat curata di  " << -damage << " danni" << std::endl;
+		std::cout << "la creatura " << creatureName << " e stata curata di  " << -damage << " danni" << std::endl;
 		std::cout << "vita attuale : " << currentHealth << std::endl;
 	}
 
@@ -170,5 +182,28 @@ bool Creature::ReturnIsOnDefence()
 std::string Creature::ReturnCreatureName()
 {
 	return creatureName;
+}
+
+int Creature::ReturnConsumableType()
+{
+	if (dynamic_cast<HealingPotion*>(consumableSlot.get()))
+	{
+		std::cout << "la creatura " << creatureName << " ha una pozione di cura" << std::endl;
+		std::cout << std::endl;
+		return 1;
+	}
+	else  
+		if(dynamic_cast<IncendiaryBomb*>(consumableSlot.get())) 
+		{
+			std::cout << "la creatura " << creatureName << " ha una bomba" << std::endl;
+			std::cout << std::endl;
+			return 2;
+		}
+		else
+		{
+			std::cout << "la creatura " << creatureName << " non ha nessun consumabile" << std::endl;
+			std::cout << std::endl;
+			return 0;
+		}
 }
 
