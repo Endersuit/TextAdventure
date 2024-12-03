@@ -12,16 +12,16 @@ int main()
 
     //puntatori smart unici -> gestione automatica della memoria
     //nemici Round One
-    std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Endersuit", 1, 6, 5, false);
-    std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Enderman", 1, 1, 2, false);
-    std::unique_ptr<Creature> endermite = std::make_unique<Creature>("Endermite", 5, 1, 1, false);
+    std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Endersuit", 20, 6, 5, false);
+    std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Enderman", 0, 1, 50, false);
+    std::unique_ptr<Creature> endermite = std::make_unique<Creature>("Endermite", 1, 1, 1, false);
     
     //array dinamico ci puntatori unici
     std::vector<std::unique_ptr<Creature>> roundOneEnemies;
    
 
     //trasferire i puntatori dei nemici in una nuova posizione
-    roundOneEnemies.push_back(std::move(endersuit));
+    //roundOneEnemies.push_back(std::move(endersuit));
     roundOneEnemies.push_back(std::move(enderman));
     roundOneEnemies.push_back(std::move(endermite));
     

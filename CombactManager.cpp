@@ -29,7 +29,6 @@ void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies
 //iniziare e gestire il combattimento
 void CombactManager::StartAndManageFight()
 {
-    //TO DO : creare una funzione che restituisca bool/false se ci sono nemici ancora vivi
     
     bool fightInProgress = true; //il combattimento procedera fino alla sconfitta di uno dei contedenti
     bool isPlayerTurn = true; //il giocatore inizia sempre per primo
@@ -38,11 +37,14 @@ void CombactManager::StartAndManageFight()
     {
         //logica per la gestione dei turni (WIP)
         
+        fightInProgress = !CheckForPossibleWinner();
+        if (!fightInProgress)
+            break;
         isPlayerTurn = CheckIfSelectionIsAvaible(player) ? true : false;
 
         if (isPlayerTurn)
         {
-            PrintCreatureInfo();
+            PrintCreaturesInfo();
             ChooseAnAction();
             continue; //torna dentro il ciclo while
         }
@@ -50,11 +52,10 @@ void CombactManager::StartAndManageFight()
             if(!isPlayerTurn &&  CheckIfEnemiesAlive())
         {
             std::cout << " turno dell 'IA " << std::endl;
+            std::cout << std::endl;
             AnalyzeAndDecide();
             continue;
         }
-
-        //TO DO : controllare se c'e un vincitore
     }
 }
 
@@ -77,7 +78,7 @@ void CombactManager::ChooseAnAction()
     case 1:
         std::cout << " hai scelto di attacare un bersaglio" << ::std::endl;
         std::cout << std::endl;
-        TargetAttack(player, ChooseAnEnemy());
+        TargetAttack(player, ChooseAnEnemyOnConsole());
         //TO DO : chiedere al giocatore cosa vule fare con il nemico scelto
         break;
     case 2:
@@ -111,7 +112,8 @@ void CombactManager::AnalyzeAndDecide()
         //controlla quanti nemici sono ancora disponibili
         SwapEnemiesArray();
 
-        std::cout << " inizio a fare la mia scelta" << std::endl;
+        std::cout << "l'IA inizia a  fare la sua scelta" << std::endl;
+        std::cout << std::endl;
         for (int i = 0; i < enemies.size() - 1;i++)
         {
             if (player->ReturnCurrentHealth() <= 0)
@@ -314,16 +316,36 @@ void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
 }
 
 
-void CombactManager::PrintCreatureInfo()//uso uan reference(&) costante per passare i valori ma evitare modifiche accidentali 
+void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per passare i valori ma evitare modifiche accidentali 
 {
     int index = 0;
     for (auto& creature : enemies) {
-        index++;
-        PrintCreatureInfo(creature.get(), index);
+        if (creature.get()->ReturnCurrentHealth() > 0)
+        {
+            index++;
+            PrintCreatureInfo(creature.get(), index);
+        }
     }
 }
 
-///////////////////////////////////////////////////Return/Output/////////////////////////////////////////////////
+bool CombactManager::CheckForPossibleWinner()
+{
+    //controlla chi e ancora vivo tra i giocatori o i nemici
+    if (player->ReturnCurrentHealth() <= 0 && CheckIfEnemiesAlive())
+    {
+        std::cout << "il nemico ha vinto :-(" <<std::endl;
+        std::cout << std::endl;
+        return true;
+    }
+    else
+        if ((player->ReturnCurrentHealth() >= 0 && !CheckIfEnemiesAlive()))
+    {
+            std::cout << "il giocatore ha vinto! =) " << std::endl;
+            std::cout << std::endl;
+            return true;
+    }
+    return false;
+}
 
 //restituisce True se ce almeno un nemico con salute > 0
 bool CombactManager::CheckIfEnemiesAlive()
@@ -379,22 +401,25 @@ int CombactManager::ReturnRandomnumber(int n)
 }
 
 //restituire un puntatore al nemico (selezionato tramite console)
-Creature* CombactManager::ChooseAnEnemy()
+Creature* CombactManager::ChooseAnEnemyOnConsole()
 {
     if (!enemies.empty())
     {
         for (int i = 0; i < enemies.size(); i++)
         {
-            PrintCreatureInfo(enemies[i].get(), i);
-            std::cout << " indice  : " << i << std::endl;
-            std::cout << std::endl;
+            if (enemies[i].get()->ReturnCurrentHealth() > 0)
+            {
+                PrintCreatureInfo(enemies[i].get(), i);
+                std::cout << " indice  : " << i << std::endl;
+                std::cout << std::endl;
+            }
         }
 
         int index = -1;
         std::cout << " digita l'indice corrispodente per selezionare una creatura " << std::endl;
         std::cout << std::endl;
 
-        while (index < 0 || index >= enemies.size())
+        while (index < 0 || index >= enemies.size() || enemies[index].get()->ReturnCurrentHealth() <= 0)
         {
             std::cin >> index;
         }
@@ -437,11 +462,13 @@ bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
     if (selcetedCreature->ReturnAAP() > 0 && selcetedCreature->ReturnCurrentHealth() > 0)
     {
         std::cout << "la  creatura "<< selcetedCreature->ReturnCreatureName() <<" e disponibile " << std::endl;
+        std::cout << std::endl;
         return true;
     }
     else
     {
         std::cout << "la creatura " << selcetedCreature->ReturnCreatureName() << " non e disponibile " << std::endl;
+        std::cout << std::endl;
         return false;
     }
 }

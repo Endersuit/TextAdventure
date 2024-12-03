@@ -21,11 +21,11 @@ public :
 	void ChooseAnAction();
 
 	void PrintCreatureInfo(Creature* creatureToPrint, int index);
-	void PrintCreatureInfo();
+	void PrintCreaturesInfo();
 	
 	//Get
 	Creature* ReturnSelectedEnemy(int index);
-	Creature* ChooseAnEnemy();
+	Creature* ChooseAnEnemyOnConsole();
 	
 	void AnalyzeAndDecide();
 	bool CheckIfSelectionIsAvaible(Creature* selcetedCreature);
@@ -36,6 +36,7 @@ public :
 	
 	//gestione turni del combattimento
 	void StartAndManageFight();
+	bool CheckForPossibleWinner();
 	bool CheckCreatureIsHighOnHealth(Creature* creature);
 	bool CheckCreatureIsFullAP(Creature* creature);
 	void SwapEnemiesArray();
