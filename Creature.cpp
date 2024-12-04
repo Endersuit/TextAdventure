@@ -124,7 +124,7 @@ void Creature::GetDamage(float damage)
 		currentHealth += (-1 * damage);
 		//controllare che la salute non superi il massimo consentitto
 		currentHealth = (currentHealth > maxHealth) ? currentHealth = maxHealth : currentHealth;
-		std::cout << "la creatura " << creatureName << " e stata curata di  " << -damage << " danni" << std::endl;
+		std::cout << "la creatura " << creatureName << " e stata curata di  " << -damage << " punti salute " << std::endl;
 		std::cout << "vita attuale : " << currentHealth << std::endl;
 	}
 

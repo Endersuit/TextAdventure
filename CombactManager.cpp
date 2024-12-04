@@ -45,8 +45,13 @@ void CombactManager::StartAndManageFight()
         if (isPlayerTurn)
         {
             std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << std::endl;
+            PrintCreatureInfo(player, 0);
+            std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << std::endl;
             PrintCreaturesInfo();
             std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << std::endl;
             ChooseAnAction();
             continue; //torna dentro il ciclo while
         }
@@ -61,56 +66,20 @@ void CombactManager::StartAndManageFight()
     }
 }
 
-//far scegliere al giocatore cosa fare (WIP)
-void CombactManager::ChooseAnAction()
-{
-    //TO DO : controllare se il giocatore ha punti azione
-    int selection = 0;
-    std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbasata) ";
-
-    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e  " << message << std::endl;
-    std::cout << std::endl;
-    while (selection < 1 || selection > 3)
-    {
-        std::cin >> selection;
-    }
-
-    switch (selection)
-    {
-    case 1:
-        std::cout << " hai scelto di attacare un bersaglio" << ::std::endl;
-        std::cout << std::endl;
-        TargetAttack(player, ChooseAnEnemyOnConsole());
-        //TO DO : chiedere al giocatore cosa vule fare con il nemico scelto
-        break;
-    case 2:
-        //TO DO : usare il consumabile
-        break;
-    case 3:
-        std::cout << " hai scelto di cambiare la tua difesa " << ::std::endl;
-        std::cout << std::endl;
-        player->SetInDefenceMode(!player->ReturnIsOnDefence());
-        break;
-
-
-    }
-}
-
 void CombactManager::AnalyzeAndDecide()
 {
     int enemiesAmount = enemies.size();
     int avaibleEnemies = 0;
-    
+
     //controlla se almeno un nemico e utilizabile
-    for (auto& creature : enemies) { 
+    for (auto& creature : enemies) {
 
         creature.get()->RestoreActionPoints();
-        if(CheckIfSelectionIsAvaible(creature.get())) 
+        if (CheckIfSelectionIsAvaible(creature.get()))
             avaibleEnemies++;
     }
 
-    //SwapEnemiesArray();
-    while (avaibleEnemies > 0)
+    while (avaibleEnemies > 0 && player->ReturnCurrentHealth() > 0)
     {
         SwapEnemiesArray();
         //controlla quanti nemici sono ancora disponibili
@@ -119,11 +88,7 @@ void CombactManager::AnalyzeAndDecide()
         std::cout << std::endl;
         for (int i = 0; i < enemies.size() - 1;i++)
         {
-            if (player->ReturnCurrentHealth() <= 0)
-            {
-                //finisce tutto
-            }
-            
+
             if (!CheckIfSelectionIsAvaible(enemies[i].get()))
             {
                 avaibleEnemies -= 1;
@@ -222,9 +187,9 @@ void CombactManager::AnalyzeAndDecide()
                         //il GIOCATORE  NON puo essere UCCISO con un ATTACO
                         else
                         {
-                                int consumableType = enemies[i].get()->ReturnConsumableType();
+                            int consumableType = enemies[i].get()->ReturnConsumableType();
                             switch (consumableType)
-                            {                            
+                            {
                             case(0): //nessun consumabile-> sceglie se attacare                            
                                 if (ReturnRandomBool())
                                 {//lascia la difesa e attaca
@@ -236,13 +201,13 @@ void CombactManager::AnalyzeAndDecide()
                                     enemies[i].get()->ClearActionPoints();
                                 }
                                 continue;
-                            
+
                             case(1): //pozione di cura-> resta in difesa, si cura, il nemico salta il turno
                                 enemies[i].get()->UseConsumable(enemies[i].get());
                                 enemies[i].get()->ClearActionPoints();
                                 continue;
-                            
-                            
+
+
                             case(2): //bomba incendiaria-> resta in difesa, lancia una bomba al nemico, salta il turno
                                 enemies[i].get()->UseConsumable(player);
                                 enemies[i].get()->ClearActionPoints();
@@ -320,23 +285,65 @@ void CombactManager::AnalyzeAndDecide()
     }
 }
 
-int::CombactManager::CheckAndUseConsumable(Creature* creature)
+//far scegliere al giocatore cosa fare (WIP)
+void CombactManager::ChooseAnAction()
+{
+    int selection = 0;
+    std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbasata) ";
+
+    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e   " << message << "\n (4) : salta il turno "<< std::endl;
+    std::cout << std::endl;
+    while (selection < 1 || selection > 4)
+    {
+        std::cin >> selection;
+    }
+
+    switch (selection)
+    {
+    case 1:
+        std::cout << " hai scelto di attacare un bersaglio" << ::std::endl;
+        std::cout << std::endl;
+        TargetAttack(player, ChooseAnEnemyOnConsole());
+        //TO DO : chiedere al giocatore cosa vule fare con il nemico scelto
+        break;
+    case 2:
+        //TO DO : usare il consumabile
+        CheckAndUseConsumableForPlayer(player);
+        break;
+    case 3:
+        std::cout << " hai scelto di cambiare la tua difesa " << ::std::endl;
+        std::cout << std::endl;
+        player->SetInDefenceMode(!player->ReturnIsOnDefence());
+        break;
+    case 4 :
+        std::cout << " hai scelto di saltare il turno " << ::std::endl;
+        std::cout << std::endl;
+        player->ClearActionPoints();
+    }
+}
+
+void::CombactManager::CheckAndUseConsumableForPlayer(Creature* creature)
 {
     int consumableType = creature->ReturnConsumableType();
     switch (consumableType)
     {
     case(0): //consumabile nullo -> non possiede nessun consumabile
-        return consumableType;
+        std::cout << "non possiedi nessun consumabile" << std::endl;
+        std::cout << std::endl;
+        break;
 
     case(1): //pozione di cura
-
-        return consumableType;
+        std::cout << "hai scelto di usare una pozione di cura" << std::endl;
+        std::cout << std::endl;
+        player->UseConsumable(player);
+        break;
     case(2):
         //bomba incendiaria
-        return consumableType;
+        std::cout << "hai scelto di usare una bomba. scegli su chi vuoi usarla" << std::endl;
+        std::cout << std::endl;
+        player->UseConsumable(ChooseAnEnemyOnConsole());
+        break;
     }
-
-    return 0;
 }
 
 //perettere all attacante di dannegiare il bersaglio
@@ -355,18 +362,25 @@ void CombactManager::TargetAttack(Creature* attacker, Creature* target)
 void CombactManager::SwapEnemiesArray() //BUG : va fixata
 {
     int numberOfInteractions = ReturnRandomnumber(enemies.size());
-    
+    std::cout << "interazioni : " << numberOfInteractions +1 << std::endl;
     for (int i = 0; i < (numberOfInteractions + 1); i++)
     {
         int firstIndex = ReturnRandomnumber(enemies.size());
-        int secondIndex;
+        int secondIndex = ReturnRandomnumber(enemies.size());
 
-        do {
+        while (firstIndex == secondIndex)
+        {
             secondIndex = ReturnRandomnumber(enemies.size());
-        } while (firstIndex != secondIndex);
-
-        if (enemies[firstIndex] && enemies[secondIndex])  
-            std::swap(enemies[firstIndex], enemies[secondIndex]);
+        }
+        
+        std::cout << "primo indice : " << firstIndex << std::endl;
+        std::cout << "secondo indice : " << secondIndex << std::endl;
+        
+        if (enemies[firstIndex] && enemies[secondIndex])
+        {
+            std::cout << "scambio i nemici " << std::endl;
+           enemies[firstIndex].swap(enemies[secondIndex]);
+        }
     }
 }
 
@@ -377,6 +391,12 @@ void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
     {
         std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
         std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || indice : " << index << " ||" << std::endl;
+    }
+    else
+        if(creatureToPrint == player)
+    {
+            std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
+            std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || " << std::endl;
     }
     else
     {
