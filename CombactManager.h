@@ -20,7 +20,7 @@ public :
 	void TargetAttack(Creature* attacker, Creature* target);
 	void ChooseAnAction();
 
-	void PrintCreatureInfo(Creature* creatureToPrint, int index);
+	void PrintCreatureInfo(Creature* creatureToPrint, int index = 0);
 	void PrintCreaturesInfo();
 	
 	//Get

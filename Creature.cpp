@@ -38,7 +38,7 @@ Creature::Creature(const Creature& other)
 			consumableSlot = std::make_unique<IncendiaryBomb>(*bomb);
 		}
 	}
-	}
+}
 //////////////////////////////////////////Gestione statistiche/////////////////////////////////////////////
 
 //ripristinare i punti azione
@@ -47,6 +47,7 @@ void Creature::RestoreActionPoints()
 	AvaibleActionPoints = actionPointsPerTurn;
 }
 
+//consuma un punto azione
 void Creature::ConsumeActionPoint()
 {
 	if (AvaibleActionPoints > 0)
@@ -55,7 +56,7 @@ void Creature::ConsumeActionPoint()
 	}
 }
 
-//usare un consumabile
+//usa il consumabile della creatura (se ne ha uno)
 void Creature::UseConsumable(Creature* target)
 {
 	if (consumableSlot) //se il puntatore e valido (!= null)
@@ -70,7 +71,9 @@ void Creature::UseConsumable(Creature* target)
 	}
 }
 
-//equipaggiare un consumabile
+//////////////////////////////////////////UTILITA E COMBATTIMENTO////////////////////////////////////////
+
+//equipaggia il consumabile
 void Creature::EquipConsumable(Consumable* consumable)
 {
 	if (!consumableSlot)//slot libero
@@ -84,7 +87,7 @@ void Creature::EquipConsumable(Consumable* consumable)
 	}
 }
 
-//attacare un altra creatura
+//attaca un altra creatura
 void Creature::Attack(Creature* target)
 {
 	if (this != target)//confronto i puntatori per vedere se puntano alla stessa cosa
@@ -98,7 +101,7 @@ void Creature::Attack(Creature* target)
 	}
 }
 
-//far subire danni alla creatura
+//fa subire danni alla creatura stessa che chiama la funzione
 void Creature::GetDamage(float damage)
 {
 	
@@ -169,6 +172,7 @@ int Creature::ReturnActionPointsPerTurn()
 	return actionPointsPerTurn;
 }
 
+//azzera tutti i punti azione della creatura
 void Creature::ClearActionPoints()
 {
 	AvaibleActionPoints = 0;
@@ -184,6 +188,10 @@ std::string Creature::ReturnCreatureName()
 	return creatureName;
 }
 
+//restituisce un numero int associato al consumabile :
+//(0) : nessun consumabile (slot vuoto)
+//(1) : pozione di cura
+//(2) : bomba icendiaria
 int Creature::ReturnConsumableType()
 {
 	if (dynamic_cast<HealingPotion*>(consumableSlot.get()))

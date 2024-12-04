@@ -8,6 +8,7 @@
 
 //////////////////////////////////////////////////SET//////////////////////////////////////////////////
 
+//imposta il giocatore principale
 void CombactManager::SetPlayer(Creature* player)
 {
     if (player != nullptr)
@@ -16,7 +17,7 @@ void CombactManager::SetPlayer(Creature* player)
     }
 }
 
-//trasferire in puntatori unici al combactManager
+//trasferire in puntatori unici all array dinamico di  combactManager
 void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies)
 {
     this->enemies.clear();
@@ -25,6 +26,8 @@ void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies
         this->enemies = std::move(enemies);  // Trasferisci la proprietà
     }
 }
+
+//////////////////////////////////////////GESTIONE COMBATTIMENTO/////////////////////////////////////////
 
 //iniziare e gestire il combattimento
 void CombactManager::StartAndManageFight()
@@ -46,7 +49,7 @@ void CombactManager::StartAndManageFight()
         {
             std::cout << "_________________________________________________________________________________________________" << std::endl;
             std::cout << std::endl;
-            PrintCreatureInfo(player, 0);
+            PrintCreatureInfo(player);
             std::cout << "_________________________________________________________________________________________________" << std::endl;
             std::cout << std::endl;
             PrintCreaturesInfo();
@@ -66,6 +69,7 @@ void CombactManager::StartAndManageFight()
     }
 }
 
+//descrizione
 void CombactManager::AnalyzeAndDecide()
 {
     int enemiesAmount = enemies.size();
@@ -118,7 +122,23 @@ void CombactManager::AnalyzeAndDecide()
                     {
                         std::cout << " AAP della creatura scelta parzialmente disponibili " << std::endl;
                         std::cout << std::endl;
-                        enemies[i]->ClearActionPoints();
+                        
+                        int consumableType = enemies[i].get()->ReturnConsumableType();
+                        switch (consumableType)
+                        {
+                        case(0): //nessun consumabile-> rimane in difesa, salta il turno                           
+                            enemies[i].get()->ClearActionPoints();
+                            continue;
+
+                        case(1): //pozione di cura-> resta in difesa, non ha bisgno di curarsi
+                            enemies[i].get()->ClearActionPoints();
+                            continue;
+
+
+                        case(2): //bomba incendiaria-> resta in difesa, lancia una bomba al nemico
+                            enemies[i].get()->UseConsumable(player);
+                            continue;
+                        }
                     }
                 }
                 // la creatura NON e sulla DIFENSIVA e ha hp > 50%
@@ -285,13 +305,13 @@ void CombactManager::AnalyzeAndDecide()
     }
 }
 
-//far scegliere al giocatore cosa fare (WIP)
+//far scegliere al giocatore cosa fare 
 void CombactManager::ChooseAnAction()
 {
     int selection = 0;
     std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbasata) ";
 
-    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e   " << message << "\n (4) : salta il turno "<< std::endl;
+    std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e " << message << "\n (4) : salta il turno "<< std::endl;
     std::cout << std::endl;
     while (selection < 1 || selection > 4)
     {
@@ -322,30 +342,6 @@ void CombactManager::ChooseAnAction()
     }
 }
 
-void::CombactManager::CheckAndUseConsumableForPlayer(Creature* creature)
-{
-    int consumableType = creature->ReturnConsumableType();
-    switch (consumableType)
-    {
-    case(0): //consumabile nullo -> non possiede nessun consumabile
-        std::cout << "non possiedi nessun consumabile" << std::endl;
-        std::cout << std::endl;
-        break;
-
-    case(1): //pozione di cura
-        std::cout << "hai scelto di usare una pozione di cura" << std::endl;
-        std::cout << std::endl;
-        player->UseConsumable(player);
-        break;
-    case(2):
-        //bomba incendiaria
-        std::cout << "hai scelto di usare una bomba. scegli su chi vuoi usarla" << std::endl;
-        std::cout << std::endl;
-        player->UseConsumable(ChooseAnEnemyOnConsole());
-        break;
-    }
-}
-
 //perettere all attacante di dannegiare il bersaglio
 void CombactManager::TargetAttack(Creature* attacker, Creature* target)
 {
@@ -359,7 +355,10 @@ void CombactManager::TargetAttack(Creature* attacker, Creature* target)
     }
 }
 
-void CombactManager::SwapEnemiesArray() //BUG : va fixata
+//////////////////////////////////////////////////UTILITA///////////////////////////////////////////////
+
+//rimescola i nemici all interno dell array in maniera casuale 
+void CombactManager::SwapEnemiesArray()
 {
     int numberOfInteractions = ReturnRandomnumber(enemies.size());
     std::cout << "interazioni : " << numberOfInteractions +1 << std::endl;
@@ -384,27 +383,49 @@ void CombactManager::SwapEnemiesArray() //BUG : va fixata
     }
 }
 
-//stampare su console tutte le statistiche della creatura
+//stampa su console tutte le statistiche della creatura scelta 
+//creatureToPrint : la creatura da stampare
+//e il suo indice nell array
+//per stampare il giocatore , non serve assegnare un indice quando richiami la funzione
 void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
 {
-    if (creatureToPrint)
+    if (!creatureToPrint)//controlla se il puntatore e null
+    {
+        std::cout << "ERRORE, PUNTATORE NULLO" << std::endl;
+        return;
+    }
+     
+    if (creatureToPrint != player)//se NON e un giocatore
     {
         std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
         std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || indice : " << index << " ||" << std::endl;
     }
-    else
-        if(creatureToPrint == player)
+    else  
+        //se e un giocatore
     {
             std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
             std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || " << std::endl;
-    }
-    else
-    {
-        std::cout << "ERRORE, PUNTATORE NULLO" << std::endl;
+            
+            int consumableType = player->ReturnConsumableType();
+        switch (consumableType)
+        { 
+            case 0:
+                std::cout << "slot consumabile : vuoto " << std::endl;
+                break;
+            case 1:
+                std::cout << "slot consumabile : pozione di cura " << std::endl;
+                break;
+            case 2:
+                std::cout << "slot consumabile : bomba incendiaria " << std::endl;
+                break;
+            default:
+                std::cout << "slot consumabile : tipo sconosciuto " << std::endl;
+                break;
+        }
     }
 }
 
-
+//stampa le informazioni di tutti i nemici sullo schermo
 void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per passare i valori ma evitare modifiche accidentali 
 {
     int index = 0;
@@ -417,43 +438,8 @@ void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per pas
     }
 }
 
-bool CombactManager::CheckForPossibleWinner()
-{
-    //controlla chi e ancora vivo tra i giocatori o i nemici
-    if (player->ReturnCurrentHealth() <= 0 && CheckIfEnemiesAlive())
-    {
-        std::cout << "il nemico ha vinto :-(" <<std::endl;
-        std::cout << std::endl;
-        return true;
-    }
-    else
-        if ((player->ReturnCurrentHealth() >= 0 && !CheckIfEnemiesAlive()))
-    {
-            std::cout << "il giocatore ha vinto! =) " << std::endl;
-            std::cout << std::endl;
-            return true;
-    }
-    return false;
-}
 
-//restituisce True se ce almeno un nemico con salute > 0
-bool CombactManager::CheckIfEnemiesAlive()
-{
-    bool enemyAvaible = false;
-    if (!enemies.empty())
-    {
-        for (auto& creature : enemies) {
-            if (creature->ReturnCurrentHealth() > 0)
-            {
-                enemyAvaible = true;
-                break;
-            }
-        }
-    }
-    return enemyAvaible;
-}
-
-//restituire true o false casulmente
+//restituisce casualmente TRUE o FALSE
 bool CombactManager::ReturnRandomBool()
 {
     srand(time(NULL)); //imposto il seme di generazione casuale
@@ -463,24 +449,7 @@ bool CombactManager::ReturnRandomBool()
     return intention;
 }
 
-bool CombactManager::CheckCreatureIsHighOnHealth(Creature* creature)
-{
-    if (creature->ReturnCurrentHealth() > (creature->ReturnMaxHealth() / 2))
-        return true;
-
-    return false;
-}
-
-//restituisce TRUE  se la creatura ha AAP al massimo
-bool CombactManager::CheckCreatureIsFullAP(Creature* creature)
-{
-    if(creature->ReturnAAP() >= creature->ReturnActionPointsPerTurn())
-        return true;
-
-    return false;
-}
-
-//restituire un numero  casuale compresso tra 0 e N
+//restituisce un numero  casuale compresso tra 0 e N
 int CombactManager::ReturnRandomnumber(int n)
 {
     srand(time(NULL)); //imposto il seme di generazione casuale
@@ -541,13 +510,12 @@ Creature* CombactManager::ReturnSelectedEnemy(int index)
     return nullptr;
 }
 
-//controlla se il nemico scelto e utilizabile
+//ritorna TRUE se il nemico scelto e utilizabile.
+//un nemico e considerato "utilizabile" se soddisfa etrambe le condizioni : 
+//salute > 0
+//AAP (avaible action points) > 0
 bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
 {
-    //un nemico e considerato "utilizabile" se ha : 
-    //salute > 0
-    //AAP (avaible action points) > 0
-
     if (selcetedCreature->ReturnAAP() > 0 && selcetedCreature->ReturnCurrentHealth() > 0)
     {
         std::cout << "la  creatura "<< selcetedCreature->ReturnCreatureName() <<" e disponibile " << std::endl;
@@ -559,5 +527,84 @@ bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
         std::cout << "la creatura " << selcetedCreature->ReturnCreatureName() << " non e disponibile " << std::endl;
         std::cout << std::endl;
         return false;
+    }
+}
+
+//restituisce TRUE se la salute della creatura e superiore al 50%
+bool CombactManager::CheckCreatureIsHighOnHealth(Creature* creature)
+{
+    if (creature->ReturnCurrentHealth() > (creature->ReturnMaxHealth() / 2))
+        return true;
+
+    return false;
+}
+
+//restituisce TRUE  se la creatura ha AAP al massimo
+bool CombactManager::CheckCreatureIsFullAP(Creature* creature)
+{
+    if (creature->ReturnAAP() >= creature->ReturnActionPointsPerTurn())
+        return true;
+
+    return false;
+}
+
+//restituisce True se ce almeno un nemico con salute > 0
+bool CombactManager::CheckIfEnemiesAlive()
+{
+    bool enemyAvaible = false;
+    if (!enemies.empty())
+    {
+        for (auto& creature : enemies) {
+            if (creature->ReturnCurrentHealth() > 0)
+            {
+                enemyAvaible = true;
+                break;
+            }
+        }
+    }
+    return enemyAvaible;
+}
+
+//controlla se c'e un vincitore
+bool CombactManager::CheckForPossibleWinner()
+{
+    //controlla chi e ancora vivo tra i giocatori o i nemici
+    if (player->ReturnCurrentHealth() <= 0 && CheckIfEnemiesAlive())
+    {
+        std::cout << "il nemico ha vinto :-(" << std::endl;
+        std::cout << std::endl;
+        return true;
+    }
+    else
+        if ((player->ReturnCurrentHealth() >= 0 && !CheckIfEnemiesAlive()))
+        {
+            std::cout << "il giocatore ha vinto! =) " << std::endl;
+            std::cout << std::endl;
+            return true;
+        }
+    return false;
+}
+//controlla e permette di usare il consumabile del giocatore
+void::CombactManager::CheckAndUseConsumableForPlayer(Creature* creature)
+{
+    int consumableType = creature->ReturnConsumableType();
+    switch (consumableType)
+    {
+    case(0): //consumabile nullo -> non possiede nessun consumabile
+        std::cout << "non possiedi nessun consumabile" << std::endl;
+        std::cout << std::endl;
+        break;
+
+    case(1): //pozione di cura
+        std::cout << "hai scelto di usare una pozione di cura" << std::endl;
+        std::cout << std::endl;
+        player->UseConsumable(player);
+        break;
+    case(2):
+        //bomba incendiaria
+        std::cout << "hai scelto di usare una bomba. scegli su chi vuoi usarla" << std::endl;
+        std::cout << std::endl;
+        player->UseConsumable(ChooseAnEnemyOnConsole());
+        break;
     }
 }
