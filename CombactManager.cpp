@@ -29,7 +29,7 @@ void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies
 
 //////////////////////////////////////////GESTIONE COMBATTIMENTO/////////////////////////////////////////
 
-//iniziare e gestire il combattimento
+//inizia e gesticeil combattimento
 void CombactManager::StartAndManageFight()
 {
     
@@ -37,9 +37,7 @@ void CombactManager::StartAndManageFight()
     bool isPlayerTurn = true; //il giocatore inizia sempre per primo
 
     while (fightInProgress)
-    {
-        //logica per la gestione dei turni (WIP)
-        
+    {     
         fightInProgress = !CheckForPossibleWinner();
         if (!fightInProgress)
             break;
@@ -48,12 +46,12 @@ void CombactManager::StartAndManageFight()
         if (isPlayerTurn)
         {
             std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << "_________________________________________________________________________________________________" << std::endl;
             std::cout << std::endl;
             PrintCreatureInfo(player);
-            std::cout << "_________________________________________________________________________________________________" << std::endl;
             std::cout << std::endl;
             PrintCreaturesInfo();
-            std::cout << "_________________________________________________________________________________________________" << std::endl;
             std::cout << std::endl;
             ChooseAnAction();
             continue; //torna dentro il ciclo while
@@ -61,7 +59,8 @@ void CombactManager::StartAndManageFight()
         else
             if(!isPlayerTurn &&  CheckIfEnemiesAlive())
         {
-            std::cout << " turno dell 'IA " << std::endl;
+            std::cout << std::endl;
+            std::cout << "turno dell 'IA " << std::endl;
             std::cout << std::endl;
             AnalyzeAndDecide();
             continue;
@@ -90,37 +89,45 @@ void CombactManager::AnalyzeAndDecide()
 
         std::cout << "l'IA inizia a  fare la sua scelta" << std::endl;
         std::cout << std::endl;
-        for (int i = 0; i < enemies.size() - 1;i++)
-        {
-
+        for (int i = 0; i < enemies.size();i++)
+        {   
             if (!CheckIfSelectionIsAvaible(enemies[i].get()))
             {
                 avaibleEnemies -= 1;
                 continue;
             }
+
+            //informazioni sul nemico 
+            std::string creatureName = enemies[i].get()->ReturnCreatureName();
+            bool creatureIsHighOnHealth = CheckCreatureIsHighOnHealth(enemies[i].get());
+            bool creatureIsOnDefence = enemies[i].get()->ReturnIsOnDefence();
+            bool creatureIsFullAP = CheckCreatureIsFullAP(enemies[i].get());
+
             /////////////////////////////////la creatura ha HP > 50%////////////////////////////////////////
-            if (CheckCreatureIsHighOnHealth(enemies[i].get()))
+            if (creatureIsHighOnHealth)
             {
                 /*std::cout << " salute della creatura scelta > 50% " << std::endl;*/
 
                 //la creatura E' sulla DIFENSIVA
-                if (enemies[i]->ReturnIsOnDefence())
+                if (creatureIsOnDefence)
                 {
-                    std::cout << " la creatura e sulla difensiva e ha hp > 50% " << std::endl;
+                    std::cout << " la creatura "<< creatureName <<" e sulla difensiva e ha hp > 50% " << std::endl;
                     std::cout << std::endl;
 
                     //APP completamente disponibili
-                    if (CheckCreatureIsFullAP(enemies[i].get()))
+                    if (creatureIsFullAP)
                     {
-                        std::cout << " AAP della creatura scelta completamente disponibili " << std::endl;
+                        std::cout << "AAP di "<< creatureName << " creatura scelta completamente disponibili " << std::endl;
                         std::cout << std::endl;
                         enemies[i]->SetInDefenceMode(false);
+                        std::cout << creatureName << " lascia la difesa e attaca il gioccatore" << std::endl;
+                        std::cout << std::endl;
                         TargetAttack(enemies[i].get(), player);
                     }
                     //APP PARZIALMENTE disponibili
                     else
                     {
-                        std::cout << " AAP della creatura scelta parzialmente disponibili " << std::endl;
+                        std::cout << "AAP di" << creatureName << " creatura scelta parzialmente disponibili " << std::endl;
                         std::cout << std::endl;
                         
                         int consumableType = enemies[i].get()->ReturnConsumableType();
@@ -144,24 +151,24 @@ void CombactManager::AnalyzeAndDecide()
                 // la creatura NON e sulla DIFENSIVA e ha hp > 50%
                 else
                 {
-                    std::cout << " la creatura NON e sulla difensiva e ha hp > 50%  " << std::endl;
+                    std::cout << "la creatura "<< creatureName << " NON e sulla difensiva e ha hp > 50%  " << std::endl;
                     std::cout << std::endl;
 
                     //APP COMPLETAMENTE disponibili
-                    if (CheckCreatureIsFullAP(enemies[i].get()))
+                    if (creatureIsFullAP)
                     {
                         TargetAttack(enemies[i].get(), player);
 
                         if (ReturnRandomBool()) //l'IA sceglie se farlo o meno
                         {
-                            std::cout << " l'IA ha scelto di ATTACARE di NUOVO " << std::endl;
+                            std::cout << "l'IA ha scelto di ATTACARE di NUOVO " << std::endl;
                             std::cout << std::endl;
                             TargetAttack(enemies[i].get(), player);
                         }
                         else
                         {
                             //nietne
-                            std::cout << " l'IA ha scelto di NON ATTACARE di NUOVO " << std::endl;
+                            std::cout << "l'IA ha scelto di NON ATTACARE di NUOVO " << std::endl;
                             std::cout << std::endl;
                         }
                     }
@@ -170,14 +177,14 @@ void CombactManager::AnalyzeAndDecide()
                     {
                         if (ReturnRandomBool())
                         {
-                            std::cout << " l'IA ha scelto di ATTACARE di NUOVO " << std::endl;
+                            std::cout << "l'IA ha scelto di ATTACARE di NUOVO " << std::endl;
                             std::cout << std::endl;
                             TargetAttack(enemies[i].get(), player);
                         }
                         else
                         {
                             enemies[i]->SetInDefenceMode(true);
-                            std::cout << " l'IA ha scelto di NON ATTACARE di NUOVO  e tenere la creatura sulla DIFESA" << std::endl;
+                            std::cout << "l'IA ha scelto di NON ATTACARE di NUOVO  e tenere la creatura sulla DIFESA" << std::endl;
                             std::cout << std::endl;
                         }
                     }
@@ -188,18 +195,18 @@ void CombactManager::AnalyzeAndDecide()
             {
 
                 //la creatura E' sulla DIFENSIVA
-                if (enemies[i]->ReturnIsOnDefence())
+                if (creatureIsOnDefence)
                 {
-                    std::cout << " la creatura e sulla DIFENSIVA e ha HP < 50% " << std::endl;
+                    std::cout << "la creatura " <<creatureName << " e sulla DIFENSIVA e ha HP < 50% " << std::endl;
                     std::cout << std::endl;
 
                     //APP COMPLETAMENTE disponibili
-                    if (CheckCreatureIsFullAP(enemies[i].get()))
+                    if (creatureIsFullAP)
                     {
                         //il GIOCATORE puo essere UCCISO con un ATTACO
                         if (player->ReturnCurrentHealth() <= enemies[i]->ReturnAttack())
                         {
-                            std::cout << " il giocatore puo essere ucciso con un attaco, lascia la difesa e attaca " << std::endl;
+                            std::cout << "il giocatore puo essere ucciso con un attaco, lascia la difesa e attaca " << std::endl;
                             std::cout << std::endl;
                             enemies[i]->SetInDefenceMode(false);
                             TargetAttack(enemies[i].get(), player);
@@ -238,7 +245,7 @@ void CombactManager::AnalyzeAndDecide()
                     //APP PARZIALMENTE disponibili
                     else
                     {
-                        std::cout << " AAP della creatura scelta parzialmente disponibili " << std::endl;
+                        std::cout << "AAP della creatura "<<creatureName << " parzialmente disponibili " << std::endl;
                         std::cout << std::endl;
                         int consumableType = enemies[i].get()->ReturnConsumableType();
                         switch (consumableType)
@@ -262,13 +269,13 @@ void CombactManager::AnalyzeAndDecide()
                 //la creatura NON e sulla DIFENSIVA
                 else
                 {
-                    std::cout << " la creatura NON e  sulla Difensiva e ha HP < 50% " << std::endl;
+                    std::cout << "la creatura "<< creatureName<<" NON e  sulla Difensiva e ha HP < 50 % " << std::endl;
                     std::cout << std::endl;
 
                     //APP COMPLETAMENTE disponibili
-                    if (enemies[i]->ReturnAAP() >= enemies[i]->ReturnActionPointsPerTurn())
+                    if (creatureIsFullAP)
                     {
-                        std::cout << " la creatura ATTACA e DIFENDE " << std::endl;
+                        std::cout << "la creatura ATTACA e DIFENDE " << std::endl;
                         std::cout << std::endl;
                         TargetAttack(enemies[i].get(), player);
                         enemies[i]->SetInDefenceMode(true);
@@ -279,14 +286,14 @@ void CombactManager::AnalyzeAndDecide()
                         //il GIOCATORE puo essere UCCISO con un ATTACO
                         if (player->ReturnCurrentHealth() <= enemies[i]->ReturnAttack())
                         {
-                            std::cout << " il giocatore puo esser eucciso con un attaco, la creatura attaca " << std::endl;
+                            std::cout << "il giocatore puo esser eucciso con un attaco, la creatura attaca " << std::endl;
                             std::cout << std::endl;
                             TargetAttack(enemies[i].get(), player);
                         }
                         //il GIOCATORE  NON puo essere UCCISO con un ATTACO
                         else
                         {
-                            std::cout << " la creatura cerca di DIFENDERSI " << std::endl;
+                            std::cout << "la creatura cerca di DIFENDERSI " << std::endl;
                             std::cout << std::endl;
                             enemies[i]->SetInDefenceMode(true);
                         }
@@ -360,9 +367,11 @@ void CombactManager::TargetAttack(Creature* attacker, Creature* target)
 //rimescola i nemici all interno dell array in maniera casuale 
 void CombactManager::SwapEnemiesArray()
 {
+    if (enemies.size() <= 1)
+        return;
     int numberOfInteractions = ReturnRandomnumber(enemies.size());
     std::cout << "interazioni : " << numberOfInteractions +1 << std::endl;
-    for (int i = 0; i < (numberOfInteractions + 1); i++)
+    for (int i = 0; i < numberOfInteractions; i++)
     {
         int firstIndex = ReturnRandomnumber(enemies.size());
         int secondIndex = ReturnRandomnumber(enemies.size());
@@ -394,46 +403,70 @@ void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
         std::cout << "ERRORE, PUNTATORE NULLO" << std::endl;
         return;
     }
-     
-    if (creatureToPrint != player)//se NON e un giocatore
+    else
     {
-        std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
-        std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || indice : " << index << " ||" << std::endl;
-    }
-    else  
-        //se e un giocatore
-    {
-            std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "abbasata";
-            std::cout << "|| Nome : " << creatureToPrint->ReturnCreatureName() << " || salute attuale : " << creatureToPrint->ReturnCurrentHealth() << " || difesa : " << defenceStatus << " || attaco : " << creatureToPrint->ReturnAttack() << " || " << std::endl;
-            
-            int consumableType = player->ReturnConsumableType();
-        switch (consumableType)
-        { 
-            case 0:
-                std::cout << "slot consumabile : vuoto " << std::endl;
-                break;
-            case 1:
-                std::cout << "slot consumabile : pozione di cura " << std::endl;
-                break;
-            case 2:
-                std::cout << "slot consumabile : bomba incendiaria " << std::endl;
-                break;
-            default:
-                std::cout << "slot consumabile : tipo sconosciuto " << std::endl;
-                break;
+        //nome
+        std::cout << "nome :  " << creatureToPrint->ReturnCreatureName() << std::endl;
+        std::cout << std::endl;
+
+        //indice (se e un nemico)
+        if (creatureToPrint != player)
+        {
+            std::cout << "indice : " << index << std::endl;
+            std::cout << std::endl;
         }
+        //consumabile e punti azione  (se e un giocatore)
+        else
+        {
+            //consumabile
+            int consumableType = player->ReturnConsumableType();
+            switch (consumableType)
+                {
+                case 0:
+                    std::cout << "slot consumabile : vuoto " << std::endl;
+                    std::cout << std::endl;
+                    break;
+                case 1:
+                    std::cout << "slot consumabile : pozione di cura " << std::endl;
+                    std::cout << std::endl;
+                    break;
+                case 2:
+                    std::cout << "slot consumabile : bomba incendiaria " << std::endl;
+                    std::cout << std::endl;
+                    break;
+                default:
+                    std::cout << "slot consumabile : tipo sconosciuto " << std::endl;
+                    std::cout << std::endl;
+                    break;
+                }
+            //punti azione
+            std::cout << "punti azione rimasti  :  " << creatureToPrint->ReturnAAP() << std::endl;
+            std::cout << std::endl;
+        }
+        //salute
+        std::cout << "salute attuale :  " << creatureToPrint->ReturnCurrentHealth() << std::endl;
+        std::cout << std::endl;
+        //difesa
+        std::string defenceStatus = (creatureToPrint->ReturnIsOnDefence()) ? "alzata" : "bassa";
+        std::cout << "difesa :  " << creatureToPrint->ReturnDefenceValue() << ", status : " << defenceStatus << std::endl;
+        std::cout << std::endl;
+        //attaco
+        std::cout << "attaco :  " << creatureToPrint->ReturnAttack() << std::endl;
+        std::cout << std::endl;
+        std::cout << "_________________________________________________________________________________________________" << std::endl;
+        std::cout << std::endl;
+
     }
 }
 
-//stampa le informazioni di tutti i nemici sullo schermo
+//stampa le informazioni di tutti i nemici sullo schermo in colona (se sono ancora vivi)
 void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per passare i valori ma evitare modifiche accidentali 
 {
-    int index = 0;
-    for (auto& creature : enemies) {
-        if (creature.get()->ReturnCurrentHealth() > 0)
+    for (int i = 0; i < enemies.size(); i++)
+    {
+        if (enemies[i].get()->ReturnCurrentHealth() > 0)
         {
-            index++;
-            PrintCreatureInfo(creature.get(), index);
+            PrintCreatureInfo(enemies[i].get(), i);
         }
     }
 }
@@ -463,16 +496,6 @@ Creature* CombactManager::ChooseAnEnemyOnConsole()
 {
     if (!enemies.empty())
     {
-        for (int i = 0; i < enemies.size(); i++)
-        {
-            if (enemies[i].get()->ReturnCurrentHealth() > 0)
-            {
-                PrintCreatureInfo(enemies[i].get(), i);
-                std::cout << " indice  : " << i << std::endl;
-                std::cout << std::endl;
-            }
-        }
-
         int index = -1;
         std::cout << " digita l'indice corrispodente per selezionare una creatura " << std::endl;
         std::cout << std::endl;

@@ -27,6 +27,7 @@ public :
 
 
 	bool ReturnIsOnDefence();
+	int ReturnDefenceValue();
 	std::string ReturnCreatureName();
 	float ReturnAttack();
 	float ReturnCurrentHealth();

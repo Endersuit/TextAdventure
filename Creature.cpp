@@ -153,6 +153,7 @@ void Creature::SetInDefenceMode(bool activate)
 	}
 	isOnDefensive = activate;
 	std::cout << "la difesa della creatura " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
+	std::cout << std::endl;
 	ConsumeActionPoint();
 }
 
@@ -190,6 +191,11 @@ void Creature::ClearActionPoints()
 bool Creature::ReturnIsOnDefence()
 {
 	return isOnDefensive;
+}
+
+int Creature::ReturnDefenceValue()
+{
+	return defence;
 }
 
 std::string Creature::ReturnCreatureName()
