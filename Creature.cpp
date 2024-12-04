@@ -117,9 +117,18 @@ void Creature::GetDamage(float damage)
 		}
 		else
 		{
-			currentHealth -= damageAmount;
-			std::cout << "la creatura " << creatureName << " ha subito " << damageAmount << " danni" << std::endl;
-			std::cout << "vita residua : " <<currentHealth <<std::endl;
+			//la difesa e abbastanza forte da assorbire tutto il danno
+			if (damageAmount <= 0)
+			{
+				std::cout << "la creatura " << creatureName << " ha una difesa sufficiente ad annulare i danni ricevuti " << std::endl;
+				std::cout << std::endl;
+			}
+			else
+			{
+				currentHealth -= damageAmount;
+				std::cout << "la creatura " << creatureName << " ha subito " << damageAmount << " danni" << std::endl;
+				std::cout << "vita residua : " << currentHealth << std::endl;
+			}
 		}
 	}
 	else //viene curato

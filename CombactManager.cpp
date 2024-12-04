@@ -83,9 +83,9 @@ void CombactManager::AnalyzeAndDecide()
             avaibleEnemies++;
     }
 
+    SwapEnemiesArray();
     while (avaibleEnemies > 0 && player->ReturnCurrentHealth() > 0)
     {
-        SwapEnemiesArray();
         //controlla quanti nemici sono ancora disponibili
 
         std::cout << "l'IA inizia a  fare la sua scelta" << std::endl;
