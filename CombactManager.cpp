@@ -35,19 +35,27 @@ void CombactManager::StartAndManageFight()
     
     bool fightInProgress = true; //il combattimento procedera fino alla sconfitta di uno dei contedenti
     bool isPlayerTurn = true; //il giocatore inizia sempre per primo
+    int currentTurn = 0;
 
     while (fightInProgress)
     {     
         fightInProgress = !CheckForPossibleWinner();
         if (!fightInProgress)
+        {
+            std::cout << " ________________________________________________________________________________________________" << std::endl;
+            std::cout << "|                                                                                                |" << std::endl;
+            std::cout << "|                                       FINE BATTAGLIA                                              |" << std::endl;
+            std::cout << "|________________________________________________________________________________________________|" << std::endl;
             break;
+        }
         isPlayerTurn = CheckIfSelectionIsAvaible(player) ? true : false;
 
         if (isPlayerTurn)
         {
-            std::cout << "_________________________________________________________________________________________________" << std::endl;
-            std::cout << "_________________________________________________________________________________________________" << std::endl;
-            std::cout << "_________________________________________________________________________________________________" << std::endl;
+            std::cout << " ________________________________________________________________________________________________" << std::endl;
+            std::cout << "|                                                                                                |" << std::endl;
+            std::cout << "|                                       TURNO "<< currentTurn +1  <<"                                                  |"<< std::endl;
+            std::cout << "|________________________________________________________________________________________________|" << std::endl;
             std::cout << std::endl;
             PrintCreatureInfo(player);
             std::cout << std::endl;
@@ -63,6 +71,7 @@ void CombactManager::StartAndManageFight()
             std::cout << " <<turno dell 'IA>>" << std::endl;
             std::cout << std::endl;
             AnalyzeAndDecide();
+            currentTurn++;
             continue;
         }
     }
@@ -464,6 +473,11 @@ void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
 //stampa le informazioni di tutti i nemici sullo schermo in colona (se sono ancora vivi)
 void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per passare i valori ma evitare modifiche accidentali 
 {
+    std::cout << std::endl;
+    std::cout << "____________________________________|||___________|||____________________________________________" << std::endl;
+    std::cout << "____________________________________|||___NEMICI__|||____________________________________________" << std::endl;
+    std::cout << "____________________________________ \|/___________\|/___________________________________________" << std::endl;
+    std::cout << std::endl;
     for (int i = 0; i < enemies.size(); i++)
     {
         if (enemies[i].get()->ReturnCurrentHealth() > 0)
@@ -593,7 +607,7 @@ bool CombactManager::CheckIfEnemiesAlive()
 //controlla se c'e un vincitore
 bool CombactManager::CheckForPossibleWinner()
 {
-    //controlla chi e ancora vivo tra i giocatori o i nemici
+        //controlla chi e ancora vivo tra i giocatori o i nemici
     if (player->ReturnCurrentHealth() <= 0 && CheckIfEnemiesAlive())
     {
         std::cout << "il nemico ha vinto :-(" << std::endl;

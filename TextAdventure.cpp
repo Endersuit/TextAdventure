@@ -36,23 +36,23 @@ int main()
 
     //puntatori smart unici -> gestione automatica della memoria
     //nemici Round One
-    std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Colosso", 25, 9, 3, true, std::make_unique<HealingPotion>());
-    std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> endermite = std::make_unique<Creature>("sgherro", 15, 2, 6, true, nullptr);
-    //array dinamico ci puntatori unici
-    std::vector<std::unique_ptr<Creature>> roundOneEnemies;
-    //trasferire i puntatori dei nemici in una nuova posizione
-    roundOneEnemies.push_back(std::move(endersuit));
-    roundOneEnemies.push_back(std::move(enderman));
-    roundOneEnemies.push_back(std::move(endermite));
+    //std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Colosso", 25, 9, 3, true, std::make_unique<HealingPotion>());
+    //std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, std::make_unique<IncendiaryBomb>());
+    //std::unique_ptr<Creature> endermite = std::make_unique<Creature>("sgherro", 15, 2, 6, true, nullptr);
+    ////array dinamico ci puntatori unici
+    //std::vector<std::unique_ptr<Creature>> roundOneEnemies;
+    ////trasferire i puntatori dei nemici in una nuova posizione
+    //roundOneEnemies.push_back(std::move(endersuit));
+    //roundOneEnemies.push_back(std::move(enderman));
+    //roundOneEnemies.push_back(std::move(endermite));
     
 
-    //passare la lista di nemici per questo round
-    CombactManager::Get().SetEnemies(std::move(roundOneEnemies));
+    ////passare la lista di nemici per questo round
+    //CombactManager::Get().SetEnemies(std::move(roundOneEnemies));
 
 
-    //DEBUG 
-    CombactManager::Get().StartAndManageFight();
+    ////DEBUG 
+    //CombactManager::Get().StartAndManageFight();
     
     //chiudere l'eseguibile solo quando l'utente lo desidera 
     std::cout << " digita 1 per uscire" << std::endl;
@@ -63,21 +63,35 @@ int main()
     return 0;
 }
 
-//restituisce TRUE(equivalente a un si) o FALSE (equivalente a un no)
-bool GetUserDecision()
-{
-    int userChoice = -1;
-    while (userChoice < 0 || userChoice > 1)
-    {
-        std::cin >> userChoice;
+bool isNumber(std::string& str) {
+    for (char c : str) {
+        if (!std::isdigit(c)) return false; // Controlla se ogni carattere è un numero
     }
-    return (userChoice == 1) ? true : false;
+    return !str.empty(); // Controlla che la stringa non sia vuota
+}
+
+//restituisce TRUE(equivalente a un si) o FALSE (equivalente a un no)
+bool GetUserDecision() 
+{
+    std::string userChoice;
+
+    do {
+        std::cout << "Inserisci 1 o 0  per selezionare una delle due opzioni : ";
+        std::cin >> userChoice;
+
+        if (!isNumber(userChoice) || (userChoice != "1" && userChoice != "0")) {
+            std::cout << "Input non valido. Riprova.";
+            std::cout << std::endl;
+        }
+    } while (userChoice != "1" && userChoice != "0");
+
+    return userChoice == "1"; // Restituisce true per "1", false per "0"
 }
 
 std::string SetPlayerName()
 {
     std::cout << "lo sapevi che questo gioco ti permette di scegliere un nome ? dovresti approfitarne" << std::endl;
-    std::string playerName = "nothing";
+    std::string playerName;
     bool nameChosen = false;
 
     while (nameChosen == false)
@@ -95,8 +109,13 @@ std::string SetPlayerName()
             {
                 std::cout << "non puoi usare un nome vuoto" << std::endl;
             }
-        std::cout << "sicuro della scelta(1 : si, 0 : no) ? " << std::endl;
+
+        std::cout << "sicuro della scelta ?" << std::endl;
         std::cout << std::endl;
+        
+        std::cout << "(1) : si"<<std::endl;
+        std::cout << "(0) : no" << std::endl;
+
         nameChosen = GetUserDecision();
     }
     return playerName;
@@ -129,7 +148,7 @@ void Introduction(std::string playerName)
 
     GoForwardOnConsole();
 
-    std::cout << "consapevole del rischio e pronto al peggio, hai riposto il pacco nella tua borsa e iniziato il tuo viaggio verso la destinaizone." << std::endl
+    std::cout << "consapevole del rischio e pronto al peggio, hai riposto il pacco nella tua borsa e iniziato il tuo viaggio verso la destinazione." << std::endl
         << "dopo quasi due ore di viaggio alle spalle e il sole di mezzogiorno che irradiava forte sulla tua testa, hai deciso di concederti una pausa sotto l'ombra di un albero" << std::endl;
 
     GoForwardOnConsole();
@@ -137,11 +156,11 @@ void Introduction(std::string playerName)
 
 void TutorialIntro()
 {
-    std::cout << "sdraiato sul tronco dell albero,stavi provando a imaginare  cosa avresti fatto con tutti quei soldi una volta finila la consegna," << std::endl
+    std::cout << "sdraiato sul tronco dell albero,stavi provando a immaginare  cosa avresti fatto con tutti quei soldi una volta finita la consegna," << std::endl
         <<"'" << playerName << "' disse un uomo sulla quarantina che sembrava essere apparso dal nulla" << std::endl
-        << "'cosa !?' avevi risposto tu, completamente colto alla sprovista dell arrivo di quel uomo di cui non sapevi niente" << std::endl
+        << "'cosa !?' avevi risposto tu, completamente colto alla sprovvista dell' arrivo di quel uomo di cui non sapevi niente" << std::endl
         << "'il tuo nome', disse l'uomo misterioso indicando la tua targetta identificativa" << std::endl
-        << "'comunque mi chiamo dutch, non sono cosi vecchio, ma lo sono abbastanza per sapere che  viaggiare da queste parti e pericoloso , soppratutto per chi non sa difendersi'" << std::endl
+        << "'comunque mi chiamo Dutch, non sono cosi vecchio , ma lo sono abbastanza per sapere che  viaggiare da queste parti e pericoloso , soppratutto per chi non sa difendersi'" << std::endl
         << "'tuttavia, potrei insegnarti a darle e prenderle, se me lo permetessi.....(tutorial)'" << std::endl;
 
     std::cout << std::endl;
@@ -168,7 +187,7 @@ void TutorialIntro()
 void TutorialInfo()
 {
     std::cout << std::endl;
-    std::cout << "dutch : bene , allora partiamo dalle basi : " << std::endl;
+    std::cout << "Dutch : bene , allora partiamo dalle basi : " << std::endl;
     std::cout << std::endl;
 
     std::cout << "<<STATISTICHE>> " << std::endl;
@@ -206,13 +225,13 @@ void TutorialInfo()
 
 void TutorialFight()
 {
-    std::cout << "dutch : ci sono altre cose che potrei dirti, ma forse e meglio se provi a buttarti nella pratica" << std::endl;
+    std::cout << "Dutch : ci sono altre cose che potrei dirti, ma forse e meglio se provi a buttarti nella pratica" << std::endl;
     std::cout << std::endl;
 
     std::cout << std::endl;
     std::cout << "inserisci il numero corrispodente su console" << std::endl;
     std::cout << std::endl;
-    std::cout << "(1) : si, facciamoo!(continua il tutorial, sfida dutch a una battaglia di prova) " << std::endl;
+    std::cout << "(1) : si, facciamoo!(continua il tutorial, sfida Dutch a una battaglia di prova) " << std::endl;
     std::cout << "(0) : no, penso sia sufficiente (termina il tutorial) " << std::endl;
     std::cout << std::endl;
 
@@ -220,9 +239,9 @@ void TutorialFight()
     //inizia la battalia di prova
     if (playerChoice)
     {
-        std::cout << "dutch : bene allora iniziamo " << std::endl;
+        std::cout << "Dutch : bene allora iniziamo " << std::endl;
         std::cout << std::endl;
-        std::cout << "dutch ti porge un ampolla , 'cura' c'era scritto sull eticheta. \ndutch si sistemo accanto ad un manichino, un manichino che aveva qualcosa di diverso dagli altri" << std::endl;
+        std::cout << "Dutch ti porge un ampolla , 'cura' c'era scritto sull eticheta. \ndutch si sistemo accanto ad un manichino, un manichino che aveva qualcosa di diverso dagli altri" << std::endl;
         
         std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 15, 3, 3, false, std::make_unique<HealingPotion>());
         std::unique_ptr<Creature> manichino = std::make_unique<Creature>("Manichino", 20, 8, 1, true, nullptr);
@@ -236,9 +255,11 @@ void TutorialFight()
 
         //combattimento finito -> dutch pone al giocatore un consumabile
          
-        std::cout << "dutch : bene, vedo che impari in fretta, prendi una di queste , te la sei meritata. " << std::endl;
+        GoForwardOnConsole();
+
+        std::cout << "Dutch : bene, vedo che impari in fretta, prendi una di queste , te la sei meritata. " << std::endl;
         std::cout << std::endl;
-        std::cout << "dutch ha tirato fuori due oggetti e te li ha porsi davanti a te, dandotti la possibilita di prenderne uno die due " << std::endl;
+        std::cout << "Dutch ha tirato fuori due oggetti e te li ha porsi davanti a te, dandotti la possibilita di prenderne uno die due " << std::endl;
         std::cout << std::endl;
 
         std::cout << "(1) : pozione di cura (ripristina una parte della tua salute) " << std::endl;
