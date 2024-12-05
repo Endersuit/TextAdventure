@@ -10,50 +10,35 @@
 //variabili
 std::string playerName;
 Creature* player = nullptr;
+
 //setup
 void GoForwardOnConsole();
 bool GetUserDecision();
 std::string SetPlayerName();
+
 //intro/tutorial
 void Introduction(std::string playerName);
 void TutorialIntro();
 void TutorialInfo();
 void TutorialFight();
+
 //journey
+void RoundOneFight();
+
 int main()
 {
     playerName = SetPlayerName();
-    player = new Creature(playerName, 15, 4, 10, false, std::make_unique<HealingPotion>());
+    player = new Creature(playerName, 20, 4, 10, false, std::make_unique<HealingPotion>());
     CombactManager::Get().SetPlayer(player);
 
+    //introduzione e tutorial
     Introduction(playerName);
     TutorialIntro();
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-    //puntatori smart unici -> gestione automatica della memoria
-    //nemici Round One
-    //std::unique_ptr<Creature> endersuit = std::make_unique<Creature>("Colosso", 25, 9, 3, true, std::make_unique<HealingPotion>());
-    //std::unique_ptr<Creature> enderman = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, std::make_unique<IncendiaryBomb>());
-    //std::unique_ptr<Creature> endermite = std::make_unique<Creature>("sgherro", 15, 2, 6, true, nullptr);
-    ////array dinamico ci puntatori unici
-    //std::vector<std::unique_ptr<Creature>> roundOneEnemies;
-    ////trasferire i puntatori dei nemici in una nuova posizione
-    //roundOneEnemies.push_back(std::move(endersuit));
-    //roundOneEnemies.push_back(std::move(enderman));
-    //roundOneEnemies.push_back(std::move(endermite));
+    //primo combatimento/atto
+    RoundOneFight();
     
 
-    ////passare la lista di nemici per questo round
-    //CombactManager::Get().SetEnemies(std::move(roundOneEnemies));
 
-
-    ////DEBUG 
-    //CombactManager::Get().StartAndManageFight();
-    
     //chiudere l'eseguibile solo quando l'utente lo desidera 
     std::cout << " digita 1 per uscire" << std::endl;
     char input;
@@ -259,7 +244,7 @@ void TutorialFight()
 
         std::cout << "Dutch : bene, vedo che impari in fretta, prendi una di queste , te la sei meritata. " << std::endl;
         std::cout << std::endl;
-        std::cout << "Dutch ha tirato fuori due oggetti e te li ha porsi davanti a te, dandotti la possibilita di prenderne uno die due " << std::endl;
+        std::cout << "Dutch ha tirato fuori due oggetti e te li ha porsi davanti a te, dandotti la possibilita di prenderne uno dei due " << std::endl;
         std::cout << std::endl;
 
         std::cout << "(1) : pozione di cura (ripristina una parte della tua salute) " << std::endl;
@@ -277,7 +262,7 @@ void TutorialFight()
             player->SetNewConsumable(2);
         }
         std::string messagge = (consumabeChosen == 1) ? "pozione di cura" : "bomba incendiaria";
-        std::cout << "senza pensarci due volte, hai preso la "<< messagge<< " e te la sei messa nella borsa" << std::endl;
+        std::cout << "senza pensarci due volte, hai preso la "<< messagge<< " e te la sei messa nella borsa, ringraziando Dutch per tutto quello che ha fatto per te" << std::endl;
         std::cout << std::endl;
     }
     //salta la battaglia di prova
@@ -286,4 +271,51 @@ void TutorialFight()
         std::cout << "come preferisci " << std::endl;
         return;
     }
+
+    GoForwardOnConsole();
+    
+    std::cout << "\n  scrolatta la polvere di dosso , ti sei rimesso in cammino, ignaro di quello che sarebbe arrivato dopo" << std::endl;
+    std::cout << std::endl;
+    GoForwardOnConsole();
+}
+
+void RoundOneFight()
+{
+    std::cout << std::endl;
+    std::cout <<"dopo 90 minuti di viaggio sei arrivato a nella citta di  destinazione :  'Blackwater', una citta sulla costa di medie dimensioni, con una triste notorieta per i suoi fuorilegge " << std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout <<"reduce dal lungo viaggio che hai dovuto seguire e vicino al luogo di consegna, hai deciso di concederti una bevuta in un pub nelle vicinanze prima di raggiungere il luogo della consegna," << std::endl;
+    std::cout <<"tuttavia, non hai fatto in tempo ad entrare che un trio di teppisti ha iniziato a sbararti la strada" << std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout <<"Colosso :cosa abbiamo qui, ragazzi?" << std::endl;
+    std::cout << "\n Sgherro : qualcuno che sta trasportando qualcosa di molto importante" << std::endl;
+    std::cout << "\n l'altro Sgherro : qualcosa che fara meglio a lasciarci se ci tiene alla vita" << std::endl;
+
+    std::cout << "\n al suono di  quelle parole  minacciose , ti sei deciso a tirare su le maniche e prepararti al peggio " << std::endl;
+
+    GoForwardOnConsole();
+
+    //puntatori smart unici -> gestione automatica della memoria
+    std::unique_ptr<Creature> colosso = std::make_unique<Creature>("Colosso", 25, 9, 3, true, std::make_unique<HealingPotion>());
+    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, nullptr);
+    //array dinamico ci puntatori unici
+    std::vector<std::unique_ptr<Creature>> roundOneEnemies;
+    
+    //trasferire i puntatori dei nemici in una nuova posizione
+    roundOneEnemies.push_back(std::move(colosso));
+    roundOneEnemies.push_back(std::move(sgherro));
+    roundOneEnemies.push_back(std::move(sgherro1));
+
+
+    //passare la lista di nemici per questo round
+    CombactManager::Get().SetEnemies(std::move(roundOneEnemies));
+ 
+    CombactManager::Get().StartAndManageFight();
+
+    GoForwardOnConsole();
 }

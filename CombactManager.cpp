@@ -32,7 +32,8 @@ void CombactManager::SetEnemies(std::vector<std::unique_ptr<Creature>>&& enemies
 //inizia e gesticeil combattimento
 void CombactManager::StartAndManageFight()
 {
-    
+    player->RestoreHealthPoints();
+    player->RestoreActionPoints();
     bool fightInProgress = true; //il combattimento procedera fino alla sconfitta di uno dei contedenti
     bool isPlayerTurn = true; //il giocatore inizia sempre per primo
     int currentTurn = 0;
