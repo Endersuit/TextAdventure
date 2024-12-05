@@ -60,7 +60,7 @@ void CombactManager::StartAndManageFight()
             if(!isPlayerTurn &&  CheckIfEnemiesAlive())
         {
             std::cout << std::endl;
-            std::cout << "turno dell 'IA " << std::endl;
+            std::cout << " <<turno dell 'IA>>" << std::endl;
             std::cout << std::endl;
             AnalyzeAndDecide();
             continue;
@@ -303,7 +303,7 @@ void CombactManager::AnalyzeAndDecide()
         }
         if (avaibleEnemies <= 0)
         {
-            std::cout << "non ci sono nemici disponibili -> turno del giocatore" << std::endl;
+            std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
             std::cout << std::endl;
             if (player->ReturnCurrentHealth() > 0)
                 player->RestoreActionPoints();
@@ -316,7 +316,7 @@ void CombactManager::AnalyzeAndDecide()
 void CombactManager::ChooseAnAction()
 {
     int selection = 0;
-    std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbasata) ";
+    std::string message = (player->ReturnIsOnDefence()) ? " alzata) " : " abbassata) ";
 
     std::cout << "fai la tua scelta digitando il numero corrispodente : \n (1) : scegli un nemico e attaca \n (2) : usa un consumabile \n (3) : entra/esci  in/dalla difensiva (attualmente la tua difesa e " << message << "\n (4) : salta il turno "<< std::endl;
     std::cout << std::endl;
@@ -453,6 +453,8 @@ void CombactManager::PrintCreatureInfo(Creature* creatureToPrint, int index)
         //attaco
         std::cout << "attaco :  " << creatureToPrint->ReturnAttack() << std::endl;
         std::cout << std::endl;
+        std::cout << "_________________________________________________________________________________________________" << std::endl;
+        std::cout << "_________________________________________________________________________________________________" << std::endl;
         std::cout << "_________________________________________________________________________________________________" << std::endl;
         std::cout << std::endl;
 

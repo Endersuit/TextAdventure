@@ -47,6 +47,12 @@ void Creature::RestoreActionPoints()
 	AvaibleActionPoints = actionPointsPerTurn;
 }
 
+//ripristina la salute
+void Creature::RestoreHealthPoints()
+{
+	currentHealth = maxHealth;
+}
+
 //consuma un punto azione
 void Creature::ConsumeActionPoint()
 {
@@ -157,6 +163,27 @@ void Creature::SetInDefenceMode(bool activate)
 	ConsumeActionPoint();
 }
 
+//conferisce una pozione alla creatura che chiama la funzione :
+//(1) : pozione di cura
+//(2) : bomba icendiaria
+//(0) : nessuna
+void Creature::SetNewConsumable(int consumableType)
+{
+	switch (consumableType)
+	{
+	case 1:
+		consumableSlot = std::make_unique<HealingPotion>();
+		break;
+	case 2:
+		consumableSlot = std::make_unique<IncendiaryBomb>();
+			break;
+	default:
+		consumableSlot = nullptr;
+		std::cout << "ERRORE : tipo inserito non riconosciuto";
+		break;
+	}
+}
+
 float Creature::ReturnAttack()
 {
 	return attack;
@@ -211,20 +238,20 @@ int Creature::ReturnConsumableType()
 {
 	if (dynamic_cast<HealingPotion*>(consumableSlot.get()))
 	{
-		std::cout << "la creatura " << creatureName << " ha una pozione di cura" << std::endl;
+		/*std::cout << "la creatura " << creatureName << " ha una pozione di cura" << std::endl;*/
 		std::cout << std::endl;
 		return 1;
 	}
 	else  
 		if(dynamic_cast<IncendiaryBomb*>(consumableSlot.get())) 
 		{
-			std::cout << "la creatura " << creatureName << " ha una bomba" << std::endl;
+			/*std::cout << "la creatura " << creatureName << " ha una bomba" << std::endl;*/
 			std::cout << std::endl;
 			return 2;
 		}
 		else
 		{
-			std::cout << "la creatura " << creatureName << " non ha nessun consumabile" << std::endl;
+			/*std::cout << "la creatura " << creatureName << " non ha nessun consumabile" << std::endl;*/
 			std::cout << std::endl;
 			return 0;
 		}

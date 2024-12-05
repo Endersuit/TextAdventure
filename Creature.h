@@ -15,10 +15,12 @@ public :
 	
 	void Attack(Creature* target);
 	void SetInDefenceMode(bool activate);
+	void SetNewConsumable(int consumableType);
 	
 	void GetDamage(float damage);
 	
 	void RestoreActionPoints();
+	void RestoreHealthPoints();
 	void ConsumeActionPoint();
 	void ClearActionPoints(); //pensato per saltare il turno
 
