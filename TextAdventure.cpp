@@ -141,11 +141,11 @@ void Introduction(std::string playerName)
 {
     std::cout << std::endl;
     std::cout << "il tuo nome e' " << playerName << "' ,sei un semplice corriere che un giorno ha deciso di accettare "
-        << "una richiesta di consegna parrechio proficua per conto di terzi,che sborsavano una marea di soldi per consegnare " << std::endl
+        << "una richiesta di consegna parrechio proficua per conto di terzi,disposti a sborsare una marea di soldi per consegnare " << std::endl
         << "un pacco a una distanza relativamente corta rispetto alla media." << std::endl
         << "quando hai accetato  l'incarico avevi la sensazione che sotto c'era una fregatura, e in realta non ti sbagliavi : " << std::endl
         << "il viaggio era rischioso per via di una zona pericolosa che avresti dovuto attraversare,popolata da gente pericolosa," << std::endl
-        << "e per quanto l'idea di attravesarla non ti rendeva felice, hai deciso di correre e accettare l'incarico. " << std::endl;
+        << "e per quanto l'idea di attravesarla non ti rendeva felice, hai deciso di correre il rischio e accettare l'incarico. " << std::endl;
 
     GoForwardOnConsole();
 
@@ -203,7 +203,7 @@ void TutorialInfo()
     std::cout << "una creatura non puo attacare mentre la sua difesa e alzata" << std::endl;
     std::cout << std::endl;
     
-    std::cout << "- DIFESA : rappresenta la capacita della creatura di bloccare i danni in arrivo quando la sua difesa e' \033[1m" << "alzata" << "\033[0m  " << std::endl;
+    std::cout << "- DIFESA : rappresenta la capacita della creatura di bloccare i danni in arrivo quando la sua difesa e' \033[1m" << "alzata" << "\033[0m.  " << std::endl;
     std::cout << "se alzata, la difesa riduce di 0.5 i danni in arrivo  ogni 1 punti difesa" << std::endl;
     std::cout << std::endl;
     
@@ -212,7 +212,7 @@ void TutorialInfo()
 
     std::cout << "-INDICE : ogni nemico e contrasegnato da un indice stampato nella loro scheda. l'indice permette di indicare il nemico da attacare." << std::endl;
     std::cout << "tieni a mente che all inizio di ogni turno i nemici potrebbero cambiare posizione, e con essa il loro indice" << std::endl;
-    std::cout << "controlla sempre l'indice " << std::endl;
+    std::cout << "controlla sempre l'indice del tuo bersaglio per assicurarti di colpire il bersaglio desiderato" << std::endl;
     std::cout << std::endl;
 
     std::cout << "<<CONSUMABILI>> " << std::endl;
@@ -222,8 +222,8 @@ void TutorialInfo()
     std::cout << std::endl;
     
     std::cout << "-  attulamente esistono soli due tipi di consumabile :"<< std::endl<<  
-        "pozione di cura(cura un po della tua salute)"<<std::endl 
-        <<"bomba incediaria(danneggia un nemico scelto, puo essesre usata anche mentre sei in difesa" << std::endl;
+        "POZIONE DI CURA : cura un po della tua salute"<<std::endl 
+        <<"BOMBA INCEDIARIA : danneggia un nemico scelto, puo essesre usata anche mentre sei in difesa" << std::endl;
     
     std::cout << "- il tuo consumabile e sempre stampato nella tua scheda su console, ma non puoi vedere quello dei nemici" << std::endl;
     std::cout << std::endl;
@@ -388,9 +388,9 @@ void FinalFight()
 
 
 
-    std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 35, 8, 6, true, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("seguace di Dutch", 15, 6, 3, true, std::make_unique<HealingPotion>());
-    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("seguace di Dutch", 15, 6, 3, false, std::make_unique<HealingPotion>());
+    std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 20, 8, 5, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("seguace di Dutch", 15, 6, 2, true, std::make_unique<HealingPotion>());
+    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("seguace di Dutch", 15, 6, 2, false, std::make_unique<HealingPotion>());
     std::unique_ptr<Creature> sgherro2 = std::make_unique<Creature>("iniziato di Dutch", 10, 5, 2, true, std::make_unique<IncendiaryBomb>());
 
     std::vector<std::unique_ptr<Creature>> finalRoundEnemies;
