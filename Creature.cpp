@@ -7,7 +7,7 @@ Creature::Creature(std::string creatureName,int maxHealth, float defence,  float
 {
 	this->creatureName = creatureName;
 	this->maxHealth = maxHealth;
-	this->currentHealth = maxHealth;  // La salute iniziale è uguale a quella massima
+	this->currentHealth = maxHealth;
 	this->defence = defence;
 	this->attack = attack;
 	this->isOnDefensive = isOnDefensive;
@@ -73,7 +73,7 @@ void Creature::UseConsumable(Creature* target)
 	}
 	else
 	{
-		std::cout << "nessun consumabile equipagiato";
+		std::cout << "nessun consumabile equipaggiato";
 	}
 }
 
@@ -133,7 +133,10 @@ void Creature::GetDamage(float damage)
 			{
 				currentHealth -= damageAmount;
 				std::cout << "la creatura " << creatureName << " ha subito " << damageAmount << " danni" << std::endl;
-				std::cout << "vita residua : " << currentHealth << std::endl;
+				if (debug)
+				{
+					std::cout << "vita residua : " << currentHealth << std::endl;
+				}
 			}
 		}
 	}
@@ -143,7 +146,10 @@ void Creature::GetDamage(float damage)
 		//controllare che la salute non superi il massimo consentitto
 		currentHealth = (currentHealth > maxHealth) ? currentHealth = maxHealth : currentHealth;
 		std::cout << "la creatura " << creatureName << " e stata curata di  " << -damage << " punti salute " << std::endl;
-		std::cout << "vita attuale : " << currentHealth << std::endl;
+		if (debug)
+		{
+			std::cout << "vita attuale : " << currentHealth << std::endl;
+		}
 	}
 
 }
@@ -158,8 +164,12 @@ void Creature::SetInDefenceMode(bool activate)
 		std::cout << "la tua difesa e gia  "<< message << std::endl;
 	}
 	isOnDefensive = activate;
-	std::cout << "la difesa della creatura " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
-	std::cout << std::endl;
+	
+	if (debug)
+	{
+		std::cout << "la difesa della creatura " << creatureName << " e " << (isOnDefensive ? "alzata" : "abbasatta") << endl;
+		std::cout << std::endl;
+	}
 	ConsumeActionPoint();
 }
 
@@ -171,6 +181,9 @@ void Creature::SetNewConsumable(int consumableType)
 {
 	switch (consumableType)
 	{
+	case 0 : 
+		consumableSlot = nullptr;
+		break;
 	case 1:
 		consumableSlot = std::make_unique<HealingPotion>();
 		break;
@@ -238,21 +251,30 @@ int Creature::ReturnConsumableType()
 {
 	if (dynamic_cast<HealingPotion*>(consumableSlot.get()))
 	{
-		/*std::cout << "la creatura " << creatureName << " ha una pozione di cura" << std::endl;*/
-		std::cout << std::endl;
+		if (debug)
+		{
+			std::cout << "la creatura " << creatureName << " ha una pozione di cura" << std::endl;
+			std::cout << std::endl;
+		}
 		return 1;
 	}
 	else  
 		if(dynamic_cast<IncendiaryBomb*>(consumableSlot.get())) 
 		{
-			/*std::cout << "la creatura " << creatureName << " ha una bomba" << std::endl;*/
-			std::cout << std::endl;
+			if (debug)
+			{
+				std::cout << "la creatura " << creatureName << " ha una bomba" << std::endl;
+				std::cout << std::endl;
+			}
 			return 2;
 		}
 		else
 		{
-			/*std::cout << "la creatura " << creatureName << " non ha nessun consumabile" << std::endl;*/
-			std::cout << std::endl;
+			if (debug)
+			{
+				std::cout << "la creatura " << creatureName << " non ha nessun consumabile" << std::endl;
+				std::cout << std::endl;
+			}
 			return 0;
 		}
 }

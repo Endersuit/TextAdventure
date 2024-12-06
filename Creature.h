@@ -34,7 +34,7 @@ public :
 	float ReturnAttack();
 	float ReturnCurrentHealth();
 	float ReturnMaxHealth();
-	int ReturnAAP(); //restituisce i "avaible actionPoints"
+	int ReturnAAP(); //restituisce gli "avaible actionPoints"
 	int ReturnActionPointsPerTurn();
 	int ReturnConsumableType();
 
@@ -48,6 +48,7 @@ private :
 	float defence;
 	float attack;
 	bool isOnDefensive;
+	bool debug = false;
 	std::unique_ptr<Consumable> consumableSlot = nullptr; //smart pointer, 
 	//permette la gestione automatica della memoria senza usare "new" o "delete"
 	

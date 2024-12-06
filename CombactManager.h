@@ -52,5 +52,6 @@ private :
 	
 	bool isPlayerTurn = true; //in ogni battaglia il giocatore sara il primo a iniziare. true -> turno dle giocatore. false -> turno degli avversari
 	bool fightInProgress = true; //true -> il combattimento continuera all infinito finche non c'e un vincitore
+	bool debug = false;
 };
 
