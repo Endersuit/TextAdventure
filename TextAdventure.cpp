@@ -7,6 +7,8 @@
 #include "HealingPotion.h"
 #include "IncendiaryBomb.h"
 
+#include <cstdlib> // Necessario per exit
+
 //variabili
 std::string playerName;
 Creature* player = nullptr;
@@ -14,6 +16,7 @@ Creature* player = nullptr;
 //setup
 void GoForwardOnConsole();
 bool GetUserDecision();
+bool CheckPlayerAlive();
 std::string SetPlayerName();
 
 //intro/tutorial
@@ -25,17 +28,18 @@ void TutorialFight();
 //journey
 void RoundOneFight();
 
+void FinalFight();
+
 int main()
 {
     playerName = SetPlayerName();
-    player = new Creature(playerName, 20, 4, 10, false, std::make_unique<HealingPotion>());
+    player = new Creature(playerName, 30, 4, 10, false, nullptr);
     CombactManager::Get().SetPlayer(player);
 
-    //introduzione e tutorial
     Introduction(playerName);
     TutorialIntro();
-    //primo combatimento/atto
     RoundOneFight();
+    FinalFight();
     
 
 
@@ -71,6 +75,18 @@ bool GetUserDecision()
     } while (userChoice != "1" && userChoice != "0");
 
     return userChoice == "1"; // Restituisce true per "1", false per "0"
+}
+
+bool CheckPlayerAlive()
+{
+    if (player->ReturnCurrentHealth() > 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 std::string SetPlayerName()
@@ -152,7 +168,7 @@ void TutorialIntro()
     std::cout << "inserisci il numero corrispodente su console" << std::endl;
     std::cout << std::endl;
     std::cout <<"(1) : d'accordo allora, insegnami (inizia il tutorial) " << std::endl;
-    std::cout << "(0) : apprezzo l'interesse, ma non e la prima volta che lo faccio (salta il tutorial il tutorial) " << std::endl;
+    std::cout << "(0) : apprezzo l'interesse, ma non e la prima volta che lo faccio (salta il tutorial) " << std::endl;
     std::cout << std::endl;
 
     bool playerChoice = GetUserDecision();
@@ -194,6 +210,11 @@ void TutorialInfo()
     std::cout << "-PUNTI AZIONE : ogni creatura ha a disposizione due punti azione per turno. attacarre, alzare/abbasare la difesa o usare un conumabile consuma punti azione" << std::endl;
     std::cout << std::endl;
 
+    std::cout << "-INDICE : ogni nemico e contrasegnato da un indice stampato nella loro scheda. l'indice permette di indicare il nemico da attacare." << std::endl;
+    std::cout << "tieni a mente che all inizio di ogni turno i nemici potrebbero cambiare posizione, e con essa il loro indice" << std::endl;
+    std::cout << "controlla sempre l'indice " << std::endl;
+    std::cout << std::endl;
+
     std::cout << "<<CONSUMABILI>> " << std::endl;
     std::cout << std::endl;
     
@@ -227,6 +248,7 @@ void TutorialFight()
         std::cout << "Dutch : bene allora iniziamo " << std::endl;
         std::cout << std::endl;
         std::cout << "Dutch ti porge un ampolla , 'cura' c'era scritto sull eticheta. \ndutch si sistemo accanto ad un manichino, un manichino che aveva qualcosa di diverso dagli altri" << std::endl;
+        player->SetNewConsumable(1);
         
         std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 15, 3, 3, false, std::make_unique<HealingPotion>());
         std::unique_ptr<Creature> manichino = std::make_unique<Creature>("Manichino", 20, 8, 1, true, nullptr);
@@ -274,7 +296,7 @@ void TutorialFight()
 
     GoForwardOnConsole();
     
-    std::cout << "\n  scrolatta la polvere di dosso , ti sei rimesso in cammino, ignaro di quello che sarebbe arrivato dopo" << std::endl;
+    std::cout << "\nscrolatta la polvere di dosso , ti sei rimesso in cammino, ignaro di quello che sarebbe arrivato dopo" << std::endl;
     std::cout << std::endl;
     GoForwardOnConsole();
 }
@@ -300,9 +322,9 @@ void RoundOneFight()
     GoForwardOnConsole();
 
     //puntatori smart unici -> gestione automatica della memoria
-    std::unique_ptr<Creature> colosso = std::make_unique<Creature>("Colosso", 25, 9, 3, true, std::make_unique<HealingPotion>());
-    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("Sgherro", 15, 2, 6, true, nullptr);
+    std::unique_ptr<Creature> colosso = std::make_unique<Creature>("Colosso", 30, 9, 2, false, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("Sgherro", 15, 2, 3, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("Sgherro", 15, 2, 3, true, std::make_unique<HealingPotion>());
     //array dinamico ci puntatori unici
     std::vector<std::unique_ptr<Creature>> roundOneEnemies;
     
@@ -318,4 +340,87 @@ void RoundOneFight()
     CombactManager::Get().StartAndManageFight();
 
     GoForwardOnConsole();
+
+    if (!CheckPlayerAlive())
+    {
+        std::cout << "il tuo corpo era a terra, mentre continuavi a incassare colpi, finche uno dei tre non decide di finirti una volta per tutte " << std::endl;
+        std::cout << "\n MISSIONE FALLITA " << std::endl;
+        GoForwardOnConsole();
+        exit(0);
+    }
+    if (player->ReturnConsumableType() == 0)
+    {
+        std::cout << "uno dei fuorilegge lascia cadere una ampolla per terra, avendo spazio nella tua borsa, hai deciso di prendertela" << std::endl;
+        player->SetNewConsumable(1);
+        GoForwardOnConsole();
+    }
+    std::cout << "stanco dal combattimento che hai appena dovuto sostenere, ti sei lasciato quei tre fuorilegge alle spalle, mentre le tue nocche continuavano a sanguinare," << std::endl;
+    std::cout << "in te cresceva una sete implacabile, tuttavia, date le circostanze, hai preferito tirare dritto al punto di consegna " << std::endl;
+    
+    GoForwardOnConsole();
+}
+
+void FinalFight()
+{
+    std::cout << "\nsei arrivato al punto di consegna designato, impaziente di incassare il compenso, tuttavia non c'era nessuna traccia dell'acquirente."<<std::endl;
+    std::cout << "non sei rimasto li per molto prima di udire una voce familiare alle spalle, all improviso senti una rivoltella sulla schiena"<<std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout << "Dutch : lo ammetto :  sono sorpreso che tu sia riuscito ad arrivare fin qui, sopratutto con una cosa cosi preziona"<<
+    "[Dutch indico la borsa in cui stavi trasportando il pacco]" << std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout << playerName << " : credo che mi devi una spiegazione " << std::endl;
+    std::cout << "\nDutch ripose la rivoltella nella fondina mentre una piccola risatina usciva dalla sua bocca:  " << std::endl;
+    std::cout <<  "\nDutch : e' da un po di tempo che cerco qualcuno di capace per effetuare le mie consegne, i candidati venuti prima di te sono morti o fuggiti," << std::endl;
+    std::cout << "\nnessuno e' mai arrivato fino a questo punto, dovresti esserne fiero" << std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout<<"\n" << playerName << ": significa che avro la mia paga? " << std::endl;
+    std::cout << "\nDutch : certo!...........se ne uscirai vivo "<< std::endl;
+
+    std::cout << "\naltre tre persone si sono avvicinate a Dutch, e sembravano avere molta voglia di combattere " << std::endl;
+
+    GoForwardOnConsole();
+
+
+
+    std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 35, 8, 6, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("seguace di Dutch", 15, 6, 3, true, std::make_unique<HealingPotion>());
+    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("seguace di Dutch", 15, 6, 3, false, std::make_unique<HealingPotion>());
+    std::unique_ptr<Creature> sgherro2 = std::make_unique<Creature>("iniziato di Dutch", 10, 5, 2, true, std::make_unique<IncendiaryBomb>());
+
+    std::vector<std::unique_ptr<Creature>> finalRoundEnemies;
+
+    finalRoundEnemies.push_back(std::move(dutch));
+    finalRoundEnemies.push_back(std::move(sgherro));
+    finalRoundEnemies.push_back(std::move(sgherro1));
+    finalRoundEnemies.push_back(std::move(sgherro2));
+
+    CombactManager::Get().SetEnemies(std::move(finalRoundEnemies));
+    CombactManager::Get().StartAndManageFight();
+
+
+    if (!CheckPlayerAlive())
+    {
+        std::cout << "il tuo corpo senza vita e stato lasciato a terra in una pozza di sangue, mentre Dutch e i suoi se ne vanno , soddisfati del combattimento" << std::endl;
+        std::cout << "\n MISSIONE FALLITA " << std::endl;
+        GoForwardOnConsole();
+        exit(0);
+    }
+
+    GoForwardOnConsole();
+
+    std::cout << "Dutch era visibilmente affaticato, ma impressionato dalle tue capacita" << std::endl;
+    std::cout << playerName <<" : credo che questo ti costera un extra " << std::endl;
+    std::cout << "Dutch : si, e credo anche per te questa sara la prima di tante consegne" << std::endl;
+
+    GoForwardOnConsole();
+
+    std::cout << "dopo quel giorno , hai effetuato altre consegne per conto di Dutch, i luoghi di consegna ernao pericolosi" << std::endl;
+    std::cout << "tuttavia , con il tempo, l'esperienza e gli insegnamenti di Dutch ti hanno permesso di imparare a gestire le situazioni di pericolo." << std::endl;
+    std::cout <<"\nnel tempo, grazie ai compensi per le consegne di Dutch, il tuo tenore di vita e' migliorato" << std::endl;
 }
