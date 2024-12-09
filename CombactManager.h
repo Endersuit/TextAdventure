@@ -28,10 +28,9 @@ public :
 	Creature* ReturnSelectedEnemy(int index);
 	Creature* ChooseAnEnemyOnConsole();
 	
-	void AnalyzeAndDecide();
+	void EnemyTurn();
 	bool CheckIfSelectionIsAvaible(Creature* selcetedCreature);
 	bool CheckIfEnemiesAlive();
-	bool ReturnRandomBool();
 	
 	int ReturnRandomnumber(int n);
 	
@@ -39,8 +38,6 @@ public :
 	void StartAndManageFight();
 	void CheckAndUseConsumableForPlayer(Creature* creature); //controlla se un nemico ha un consumabile e se usarlo. a seconda dle consumabile, il nemico fa qualcosa
 	bool CheckForPossibleWinner();
-	bool CheckCreatureIsHighOnHealth(Creature* creature);
-	bool CheckCreatureIsFullAP(Creature* creature);
 	void SwapEnemiesArray();
 
 
@@ -53,6 +50,6 @@ private :
 	
 	bool isPlayerTurn = true; //in ogni battaglia il giocatore sara il primo a iniziare. true -> turno dle giocatore. false -> turno degli avversari
 	bool fightInProgress = true; //true -> il combattimento continuera all infinito finche non c'e un vincitore
-	bool debug = false;
+	bool debug = true;
 };
 

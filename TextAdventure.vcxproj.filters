@@ -56,5 +56,8 @@
     <ClInclude Include="NormalEnemy.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

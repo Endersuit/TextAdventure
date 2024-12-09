@@ -3,8 +3,14 @@
 #include <iostream>
 class Enemy: public Creature
 {
-	virtual void AnalyzeAndDecide(int playerHealth,int playerDefence, bool defenceStatus)= 0;
+
+public : 
+	Enemy(std::string creatureName, int maxHealth, float defence, float attack, bool isOnDefensive, std::unique_ptr<Consumable> consumable);
+	Enemy(const Enemy& other);
+	virtual void AnalyzeAndDecide(Creature* player) = 0;
 protected:
+
+
 
 	bool CheckCreatureIsHighOnHealth(Creature* creature);
 	bool CheckCreatureIsFullAP(Creature* creature);

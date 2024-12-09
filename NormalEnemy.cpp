@@ -2,10 +2,28 @@
 #include "NormalEnemy.h"
 #include "Enemy.h"
 
+
+
+
+NormalEnemy::NormalEnemy(std::string creatureName, int maxHealth, float defence, float attack, bool isOnDefensive, std::unique_ptr<Consumable> consumable)
+    : Enemy(creatureName, maxHealth, defence, attack, isOnDefensive, std::move(consumable))
+{
+    debug = false;
+    AvaibleActionPoints = 2;
+    actionPointsPerTurn = 2;
+}
+
+NormalEnemy::NormalEnemy(const NormalEnemy& other)
+    :Enemy(other)
+{
+
+}
+
 void NormalEnemy::AnalyzeAndDecide(Creature* player)
 {
     while (AvaibleActionPoints > 0 && player->ReturnCurrentHealth() > 0)
     {
+        std::cout << "punti azioni : " << AvaibleActionPoints << std::endl;
         //controlla quanti nemici sono ancora disponibili
 
         if (debug)
@@ -77,28 +95,21 @@ void NormalEnemy::AnalyzeAndDecide(Creature* player)
     }
 }
 
-    void NormalEnemy::CreatureOnDefenceAndFullAP(Creature* player)
+void NormalEnemy::CreatureOnDefenceAndFullAP(Creature* player)
 {
     if (debug)
     {
         std::cout << " la creatura " << creatureName << " e sulla difensiva e ha hp > 50% " << std::endl;
         std::cout << std::endl;
-    }
-
-    if (debug)
-    {
         std::cout << "AAP di " << creatureName << " creatura scelta completamente disponibili " << std::endl;
         std::cout << std::endl;
     }
-
     SetInDefenceMode(false);
-
     if (debug)
     {
         std::cout << creatureName << " lascia la difesa e attaca il gioccatore" << std::endl;
         std::cout << std::endl;
     }
-
     Attack(player);
 }
 

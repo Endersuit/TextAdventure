@@ -7,6 +7,7 @@
 class Creature
 {
 public : 
+	Creature() = default;
 	//construttore
 	Creature(std::string creatureName,int maxHealth, float defence,float attack ,bool isOnDefensive, std::unique_ptr<Consumable> consumable);
 	
@@ -40,14 +41,14 @@ public :
 
 protected : 
 
-	std::string creatureName;
-	int maxHealth;
+	std::string creatureName = "crwature";
+	int maxHealth = 5;
 	int actionPointsPerTurn = 2;
 	int AvaibleActionPoints = 2;
-	float currentHealth;
-	float defence;
-	float attack;
-	bool isOnDefensive;
+	float currentHealth = 5;
+	float defence = 3;
+	float attack = 1;
+	bool isOnDefensive = false;
 	bool debug = false;
 	std::unique_ptr<Consumable> consumableSlot = nullptr; //smart pointer, 
 	//permette la gestione automatica della memoria senza usare "new" o "delete"

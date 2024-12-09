@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="CombactManager.h" />
     <ClInclude Include="Consumable.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="HealingPotion.h" />
     <ClInclude Include="IncendiaryBomb.h" />

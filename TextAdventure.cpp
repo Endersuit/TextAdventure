@@ -4,6 +4,7 @@
 
 #include "CombactManager.h"
 #include "Creature.h"
+#include "NormalEnemy.h"
 #include "HealingPotion.h"
 #include "IncendiaryBomb.h"
 
@@ -250,10 +251,11 @@ void TutorialFight()
         std::cout << "Dutch ti porge un ampolla , 'cura' c'era scritto sull eticheta. \ndutch si sistemo accanto ad un manichino, un manichino che aveva qualcosa di diverso dagli altri" << std::endl;
         player->SetNewConsumable(1);
         
-        std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 15, 3, 3, false, std::make_unique<HealingPotion>());
-        std::unique_ptr<Creature> manichino = std::make_unique<Creature>("Manichino", 20, 8, 1, true, nullptr);
+        std::unique_ptr<NormalEnemy> dutch = std::make_unique<NormalEnemy>("Dutch", 15, 3, 3, false, std::make_unique<HealingPotion>());
+        std::unique_ptr<NormalEnemy> manichino = std::make_unique<NormalEnemy>("Manichino", 20, 8, 1, true, nullptr);
 
-        std::vector<std::unique_ptr<Creature>> tutorialEnemies;
+        std::vector<std::unique_ptr<Enemy>> tutorialEnemies;
+        
         tutorialEnemies.push_back(std::move(dutch));
         tutorialEnemies.push_back(std::move(manichino));
 
@@ -322,11 +324,11 @@ void RoundOneFight()
     GoForwardOnConsole();
 
     //puntatori smart unici -> gestione automatica della memoria
-    std::unique_ptr<Creature> colosso = std::make_unique<Creature>("Colosso", 30, 9, 2, false, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("Sgherro", 15, 2, 3, true, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("Sgherro", 15, 2, 3, true, std::make_unique<HealingPotion>());
+    std::unique_ptr<NormalEnemy> colosso = std::make_unique<NormalEnemy>("Colosso", 30, 9, 2, false, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<NormalEnemy> sgherro = std::make_unique<NormalEnemy>("Sgherro", 15, 2, 3, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<NormalEnemy> sgherro1 = std::make_unique<NormalEnemy>("Sgherro", 15, 2, 3, true, std::make_unique<HealingPotion>());
     //array dinamico ci puntatori unici
-    std::vector<std::unique_ptr<Creature>> roundOneEnemies;
+    std::vector<std::unique_ptr<Enemy>> roundOneEnemies;
     
     //trasferire i puntatori dei nemici in una nuova posizione
     roundOneEnemies.push_back(std::move(colosso));
@@ -387,13 +389,12 @@ void FinalFight()
     GoForwardOnConsole();
 
 
+    std::unique_ptr<NormalEnemy> dutch = std::make_unique<NormalEnemy>("Dutch", 20, 8, 5, true, std::make_unique<IncendiaryBomb>());
+    std::unique_ptr<NormalEnemy> sgherro = std::make_unique<NormalEnemy>("seguace di Dutch", 15, 6, 2, true, std::make_unique<HealingPotion>());
+    std::unique_ptr<NormalEnemy> sgherro1 = std::make_unique<NormalEnemy>("seguace di Dutch", 15, 6, 2, false, std::make_unique<HealingPotion>());
+    std::unique_ptr<NormalEnemy> sgherro2 = std::make_unique<NormalEnemy>("iniziato di Dutch", 10, 5, 2, true, std::make_unique<IncendiaryBomb>());
 
-    std::unique_ptr<Creature> dutch = std::make_unique<Creature>("Dutch", 20, 8, 5, true, std::make_unique<IncendiaryBomb>());
-    std::unique_ptr<Creature> sgherro = std::make_unique<Creature>("seguace di Dutch", 15, 6, 2, true, std::make_unique<HealingPotion>());
-    std::unique_ptr<Creature> sgherro1 = std::make_unique<Creature>("seguace di Dutch", 15, 6, 2, false, std::make_unique<HealingPotion>());
-    std::unique_ptr<Creature> sgherro2 = std::make_unique<Creature>("iniziato di Dutch", 10, 5, 2, true, std::make_unique<IncendiaryBomb>());
-
-    std::vector<std::unique_ptr<Creature>> finalRoundEnemies;
+    std::vector<std::unique_ptr<Enemy>> finalRoundEnemies;
 
     finalRoundEnemies.push_back(std::move(dutch));
     finalRoundEnemies.push_back(std::move(sgherro));

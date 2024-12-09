@@ -2,6 +2,25 @@
 #include <ctime>
 using namespace std;
 
+
+Enemy::Enemy(std::string creatureName, int maxHealth, float defence, float attack, bool isOnDefensive, std::unique_ptr<Consumable> consumable)
+{
+    this->creatureName = creatureName;
+    this->maxHealth = maxHealth;
+    this->currentHealth = maxHealth;
+    this->defence = defence;
+    this->attack = attack;
+    this->isOnDefensive = isOnDefensive;
+    AvaibleActionPoints = actionPointsPerTurn;
+    consumableSlot = std::move(consumable);
+}
+
+Enemy::Enemy(const Enemy& other) //puo riutilizzare diretamente quello di creature
+    : Creature(other)
+{
+
+}
+
 bool Enemy::CheckCreatureIsHighOnHealth(Creature* creature)
 {
     if (creature->ReturnCurrentHealth() > (creature->ReturnMaxHealth() / 2))

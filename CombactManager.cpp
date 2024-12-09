@@ -27,12 +27,27 @@ void CombactManager::SetEnemies(std::vector<std::unique_ptr<Enemy>>&& enemies)
 //inizia e gesticeil combattimento
 void CombactManager::StartAndManageFight()
 {
-    player->RestoreHealthPoints();
-    player->RestoreActionPoints();
-    bool fightInProgress = true; //il combattimento procedera fino alla sconfitta di uno dei contedenti
-    bool isPlayerTurn = true; //il giocatore inizia sempre per primo
-    int currentTurn = 0;
+    if (player)
+    {
+        player->RestoreHealthPoints();
+        player->RestoreActionPoints();
+        bool fightInProgress = true; //il combattimento procedera fino alla sconfitta di uno dei contedenti
+        bool isPlayerTurn = true; //il giocatore inizia sempre per primo
+        std::cout << "Il giocatore esiste" << std::endl;
+    }
+    else
+    {
+        std::cout << "ERRORE : puntatore al giocatore nullo"<<std::endl;
+        std::cout << std::endl;
+        std::cout << " digita 1 per uscire" << std::endl;
+        char input;
+        do {
+            std::cin >> input;
+        } while (input != '1');
+        exit(1);
+    }
 
+    int currentTurn = 0;
     while (fightInProgress)
     {     
         fightInProgress = !CheckForPossibleWinner();
@@ -69,7 +84,7 @@ void CombactManager::StartAndManageFight()
             
             std::cout << "l'IA sta facendo la sua mossa....." << std::endl;
             std::cout << std::endl;
-            AnalyzeAndDecide();
+            EnemyTurn();
             currentTurn++;
             continue;
         }
@@ -77,21 +92,24 @@ void CombactManager::StartAndManageFight()
 }
 
 //l'IA analiza e decide cosa fare
-void CombactManager::AnalyzeAndDecide()
+void CombactManager::EnemyTurn()
 {
     int enemiesAmount = enemies.size();
     int avaibleEnemies = 0;
 
     //controlla se almeno un nemico e utilizabile
     for (auto& creature : enemies) {
-
-        creature.get()->RestoreActionPoints();
-        if (CheckIfSelectionIsAvaible(creature.get()))
-            avaibleEnemies++;
+        
+        if (creature)
+        {
+            creature.get()->RestoreActionPoints();
+            if (CheckIfSelectionIsAvaible(creature.get()))
+                avaibleEnemies++;
+        }
     }
 
     SwapEnemiesArray();
-    while (avaibleEnemies > 0 && player->ReturnCurrentHealth() > 0)
+    while (avaibleEnemies > 0)
     {
         //controlla quanti nemici sono ancora disponibili
 
@@ -103,28 +121,30 @@ void CombactManager::AnalyzeAndDecide()
 
         for (int i = 0; i < enemies.size();i++)
         {
-            if (enemies[i].get())
+            if (avaibleEnemies <= 0)
             {
+                if (debug)
+                {
+                    std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
+                    std::cout << std::endl;
+                }
+                if (player->ReturnCurrentHealth() > 0)
+                    player->RestoreActionPoints();
+                break;
+            }
+            if (enemies[i].get()!= nullptr)
+            {
+
                 if (!CheckIfSelectionIsAvaible(enemies[i].get()))
                 {
                     avaibleEnemies -= 1;
                     continue;
                 }
+                else
+                {
+                    enemies[i].get()->AnalyzeAndDecide(player);
+                }
             }
-        }
-
-        //funzione che richiama l'IA del nemico
-
-        if (avaibleEnemies <= 0)
-        {
-            if (debug)
-            {
-                std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
-                std::cout << std::endl;
-            }
-            if (player->ReturnCurrentHealth() > 0)
-                player->RestoreActionPoints();
-            return;
         }
     }
 }
@@ -272,18 +292,6 @@ void CombactManager::PrintCreaturesInfo()//uso uan reference(&) costante per pas
 }
 
 
-//restituisce casualmente TRUE o FALSE
-bool CombactManager::ReturnRandomBool()
-{
-    srand(time(NULL)); //imposto il seme di generazione casuale
-    int num = rand();
-    bool intention = (num % 2 == 0) ? true : false ;
-    
-    if(debug) 
-        std::cout << "IA ha fatto la sua scelta :  " << intention << std::endl;
-    return intention;
-}
-
 //restituisce un numero  casuale compresso tra 0 e N
 int CombactManager::ReturnRandomnumber(int n)
 {
@@ -423,23 +431,6 @@ bool CombactManager::CheckIfSelectionIsAvaible(Creature* selcetedCreature)
         std::cout << std::endl;
         return false;
     }
-}
-//restituisce TRUE se la salute della creatura e superiore al 50%
-bool CombactManager::CheckCreatureIsHighOnHealth(Creature* creature)
-{
-    if (creature->ReturnCurrentHealth() > (creature->ReturnMaxHealth() / 2))
-        return true;
-
-    return false;
-}
-
-//restituisce TRUE  se la creatura ha AAP al massimo
-bool CombactManager::CheckCreatureIsFullAP(Creature* creature)
-{
-    if (creature->ReturnAAP() >= creature->ReturnActionPointsPerTurn())
-        return true;
-
-    return false;
 }
 
 //restituisce True se ce almeno un nemico con salute > 0

@@ -58,7 +58,7 @@ void Creature::ConsumeActionPoint()
 {
 	if (AvaibleActionPoints > 0)
 	{
-		AvaibleActionPoints--;
+		AvaibleActionPoints-= 1;
 	}
 }
 
