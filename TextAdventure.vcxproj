@@ -130,15 +130,19 @@
   <ItemGroup>
     <ClCompile Include="CombactManager.cpp" />
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="HealingPotion.cpp" />
     <ClCompile Include="IncendiaryBomb.cpp" />
+    <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="TextAdventure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CombactManager.h" />
     <ClInclude Include="Consumable.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="HealingPotion.h" />
     <ClInclude Include="IncendiaryBomb.h" />
+    <ClInclude Include="NormalEnemy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

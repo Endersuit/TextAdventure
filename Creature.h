@@ -38,7 +38,7 @@ public :
 	int ReturnActionPointsPerTurn();
 	int ReturnConsumableType();
 
-private : 
+protected : 
 
 	std::string creatureName;
 	int maxHealth;
