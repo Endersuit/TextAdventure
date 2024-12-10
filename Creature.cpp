@@ -44,6 +44,7 @@ Creature::Creature(const Creature& other)
 //ripristinare i punti azione
 void Creature::RestoreActionPoints()
 {
+	std::cout << "punti azione consumati" << std::endl;
 	AvaibleActionPoints = actionPointsPerTurn;
 }
 
@@ -58,6 +59,8 @@ void Creature::ConsumeActionPoint()
 {
 	if (AvaibleActionPoints > 0)
 	{
+		if (debug)
+			std::cout << "punti azione consumati" << std::endl;
 		AvaibleActionPoints-= 1;
 	}
 }

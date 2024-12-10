@@ -86,6 +86,18 @@ void CombactManager::StartAndManageFight()
             std::cout << std::endl;
             EnemyTurn();
             currentTurn++;
+            if (player->ReturnCurrentHealth() > 0)
+            {
+                player->RestoreActionPoints();
+                if (debug)
+                {
+                    std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
+                    std::cout << std::endl;
+                    std::cout << "punti azione del player ripristinati" << std::endl;
+                    std::cout << std::endl;
+                }
+            }
+            //BUG : non viene passato il turno al giocatore
             continue;
         }
     }
@@ -119,30 +131,36 @@ void CombactManager::EnemyTurn()
             std::cout << std::endl;
         }
 
+        //itera su tutti i nemici
         for (int i = 0; i < enemies.size();i++)
         {
             if (avaibleEnemies <= 0)
             {
-                if (debug)
-                {
-                    std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
-                    std::cout << std::endl;
-                }
+                //BUG : non entra mai qui dentro
                 if (player->ReturnCurrentHealth() > 0)
+                {
                     player->RestoreActionPoints();
+                    if (debug)
+                    {
+                        std::cout << " <<non ci sono nemici disponibili -> turno del giocatore>>" << std::endl;
+                        std::cout << std::endl;
+                        std::cout << "punti azione del player ripristinati" << std::endl;
+                        std::cout << std::endl;
+                    }
+                }
                 break;
             }
-            if (enemies[i].get()!= nullptr)
-            {
 
-                if (!CheckIfSelectionIsAvaible(enemies[i].get()))
+            if (enemies[i].get())
+            {
+                if (CheckIfSelectionIsAvaible(enemies[i].get()))
                 {
-                    avaibleEnemies -= 1;
-                    continue;
+                    enemies[i].get()->AnalyzeAndDecide(player);
                 }
                 else
                 {
-                    enemies[i].get()->AnalyzeAndDecide(player);
+                    avaibleEnemies -= 1;
+                    continue;
                 }
             }
         }

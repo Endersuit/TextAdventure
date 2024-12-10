@@ -8,7 +8,7 @@
 NormalEnemy::NormalEnemy(std::string creatureName, int maxHealth, float defence, float attack, bool isOnDefensive, std::unique_ptr<Consumable> consumable)
     : Enemy(creatureName, maxHealth, defence, attack, isOnDefensive, std::move(consumable))
 {
-    debug = false;
+    debug = true;
     AvaibleActionPoints = 2;
     actionPointsPerTurn = 2;
 }
@@ -23,7 +23,7 @@ void NormalEnemy::AnalyzeAndDecide(Creature* player)
 {
     while (AvaibleActionPoints > 0 && player->ReturnCurrentHealth() > 0)
     {
-        std::cout << "punti azioni : " << AvaibleActionPoints << std::endl;
+        std::cout << "punti azione : " << AvaibleActionPoints << std::endl;
         //controlla quanti nemici sono ancora disponibili
 
         if (debug)
@@ -105,6 +105,7 @@ void NormalEnemy::CreatureOnDefenceAndFullAP(Creature* player)
         std::cout << std::endl;
     }
     SetInDefenceMode(false);
+    
     if (debug)
     {
         std::cout << creatureName << " lascia la difesa e attaca il gioccatore" << std::endl;

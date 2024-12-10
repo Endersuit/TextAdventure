@@ -21,7 +21,7 @@ bool CheckPlayerAlive();
 std::string SetPlayerName();
 
 //intro/tutorial
-void Introduction(std::string playerName);
+void Introduction();
 void TutorialIntro();
 void TutorialInfo();
 void TutorialFight();
@@ -37,7 +37,7 @@ int main()
     player = new Creature(playerName, 30, 4, 10, false, nullptr);
     CombactManager::Get().SetPlayer(player);
 
-    Introduction(playerName);
+    Introduction();
     TutorialIntro();
     RoundOneFight();
     FinalFight();
@@ -138,7 +138,7 @@ void GoForwardOnConsole()
     std::cout << std::endl;
 }
 
-void Introduction(std::string playerName)
+void Introduction()
 {
     std::cout << std::endl;
     std::cout << "il tuo nome e' " << playerName << "' ,sei un semplice corriere che un giorno ha deciso di accettare "
